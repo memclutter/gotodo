@@ -25,7 +25,10 @@ services:
       - "--providers.docker.network=ingress"
       - "--entryPoints.web.address=:80"
   api:
-    build: .
+    image: 'github.com/memclutter/gotodo'
+    build:
+      context: ../../
+      dockerfile: build/package/Dockerfile
     expose:
       - 8000
     networks:
@@ -39,7 +42,10 @@ services:
       - "traefik.http.routers.api.rule=Host(`localhost`)"
     command: "api"
   db-migrate:
-    build: .
+    image: 'github.com/memclutter/gotodo'
+    build:
+      context: ../../
+      dockerfile: build/package/Dockerfile
     networks:
       - backend
     environment:
