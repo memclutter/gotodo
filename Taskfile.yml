@@ -1,0 +1,19 @@
+version: '3'
+tasks:
+  migrations-create:
+    cmds:
+      - migrate create -dir migrations -ext sql {{.CLI_ARGS}}
+  migrations-up:
+    vars:
+      DB_URL: 'postgres://go_todo:go_todo@localhost:5432/go_todo?sslmode=disable'
+    cmds:
+      - migrate -path migrations -database '{{.DB_URL}}' up
+  pull:
+    cmds:
+      - docker-compose pull
+  build:
+    cmds:
+      - docker-compose build
+  up:
+    cmds:
+      - docker-compose up -d --no-build
