@@ -22,6 +22,7 @@ services:
     command:
       - "--providers.docker"
       - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=ingress"
       - "--entryPoints.web.address=:80"
   api:
     build: .
@@ -34,7 +35,18 @@ services:
       DSN_DB: 'postgresql://go_todo:go_todo@db:5432/go_todo?sslmode=disable'
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=ingress"
       - "traefik.http.routers.api.rule=Host(`localhost`)"
+    command: "api"
+  db-migrate:
+    build: .
+    networks:
+      - backend
+    environment:
+      DSN_DB: 'postgresql://go_todo:go_todo@db:5432/go_todo?sslmode=disable'
+    volumes:
+      - "./migrations/:/var/app/migrations"
+    entrypoint: '/bin/sh -c "dockerize -wait tcp://db:5432 /go/bin/migrate -path /var/app/migrations -database $${DSN_DB} up"'
   db:
     image: 'bitnami/postgresql:14.2.0-debian-10-r42'
     expose:
