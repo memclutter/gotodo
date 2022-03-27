@@ -6,23 +6,28 @@ volumes:
     driver: local
 networks:
   ingress:
+    name: gotodo_ingress
     driver: bridge
   backend:
+    name: gotodo_backend
     driver: bridge
 services:
   ingress:
-    image: traefik:v2.2
+    image: traefik:v2.4.2
     expose:
       - 80
+      - 8080
     networks:
       - ingress
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "ingress_storage:/storage/"
     command:
-      - "--providers.docker"
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.network=gotodo_ingress"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=ingress"
       - "--entryPoints.web.address=:80"
   api:
     image: 'github.com/memclutter/gotodo'
@@ -38,7 +43,6 @@ services:
       DSN_DB: 'postgresql://go_todo:go_todo@db:5432/go_todo?sslmode=disable'
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=ingress"
       - "traefik.http.routers.api.rule=Host(`localhost`)"
     command: "api"
   db-migrate:
@@ -51,7 +55,7 @@ services:
     environment:
       DSN_DB: 'postgresql://go_todo:go_todo@db:5432/go_todo?sslmode=disable'
     volumes:
-      - "./migrations/:/var/app/migrations"
+      - "../../migrations/:/var/app/migrations"
     entrypoint: '/bin/sh -c "dockerize -wait tcp://db:5432 /go/bin/migrate -path /var/app/migrations -database $${DSN_DB} up"'
   db:
     image: 'bitnami/postgresql:14.2.0-debian-10-r42'

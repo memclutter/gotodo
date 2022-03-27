@@ -3,33 +3,58 @@ package endpoints
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
+	"github.com/memclutter/gotodo/internal/api/helpers"
+	"github.com/memclutter/gotodo/internal/api/schemas"
 	"github.com/memclutter/gotodo/internal/models"
 	"net/http"
 	"strconv"
 )
 
+// TasksList godoc
+//
+// @Router 			/tasks/			[get]
+// @Summary			List
+// @Description		Get tasks list
+// @Tags			tasks
+// @Accept			json
+// @Produce			json
+// @Success			200	{object}				schemas.TasksListResponse
+// @Security		ApiHeaderAuth
 func TasksList(c echo.Context) (err error) {
 	ctx := c.Request().Context()
+	authUser := helpers.GetAuthUser(c)
 	totalCount := 0
 	tasks := make([]models.Task, 0)
-	if totalCount, err = models.DB.NewSelect().Model(&tasks).ScanAndCount(ctx); err != nil {
+	query := models.DB.NewSelect().Model(&tasks).
+		Where("user_id = ?", authUser.ID)
+	if totalCount, err = query.ScanAndCount(ctx); err != nil {
 		return fmt.Errorf("tasks get error: %v", err)
 	}
-	return c.JSON(http.StatusOK, struct {
-		TotalCount int           `json:"total_count"`
-		Items      []models.Task `json:"items"`
-	}{
+	return c.JSON(http.StatusOK, schemas.TasksListResponse{
 		TotalCount: totalCount,
 		Items:      tasks,
 	})
 }
 
+// TasksCreate godoc
+//
+// @Router 			/tasks/			[post]
+// @Summary			Create
+// @Description		Create new tasks
+// @Tags			tasks
+// @Accept			json
+// @Produce			json
+// @Param			request			body		models.Task		true	"Request body"
+// @Success			201	{object}				models.Task
+// @Security		ApiHeaderAuth
 func TasksCreate(c echo.Context) (err error) {
 	ctx := c.Request().Context()
+	authUser := helpers.GetAuthUser(c)
 	task := models.Task{}
 	if err = c.Bind(&task); err != nil {
 		return fmt.Errorf("tasks create error bind: %v", err)
 	}
+	task.UserID = authUser.ID
 	if _, err = models.DB.NewInsert().Model(&task).Exec(ctx); err != nil {
 		return fmt.Errorf("tasks create error: %v", err)
 	}
@@ -38,12 +63,16 @@ func TasksCreate(c echo.Context) (err error) {
 
 func TasksRetrieve(c echo.Context) error {
 	ctx := c.Request().Context()
+	authUser := helpers.GetAuthUser(c)
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, "task not found")
 	}
 	task := models.Task{ID: id}
-	if err := models.DB.NewSelect().Model(&task).WherePK("id").Scan(ctx); err != nil {
+	query := models.DB.NewSelect().Model(&task).
+		Where("id = ?", task.ID).
+		Where("user_id = ?", authUser.ID)
+	if err := query.Scan(ctx); err != nil {
 		return fmt.Errorf("tasks retrieve error: %v", err)
 	}
 	return c.JSON(http.StatusOK, task)
@@ -51,12 +80,16 @@ func TasksRetrieve(c echo.Context) error {
 
 func TasksUpdate(c echo.Context) error {
 	ctx := c.Request().Context()
+	authUser := helpers.GetAuthUser(c)
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, "task not found")
 	}
 	task := models.Task{ID: id}
-	if err := models.DB.NewSelect().Model(&task).WherePK().Scan(ctx); err != nil {
+	query := models.DB.NewSelect().Model(&task).
+		Where("id = ?", task.ID).
+		Where("user_id = ?", authUser.ID)
+	if err := query.Scan(ctx); err != nil {
 		return fmt.Errorf("tasks update error: %v", err)
 	}
 	if err = c.Bind(&task); err != nil {
@@ -70,12 +103,16 @@ func TasksUpdate(c echo.Context) error {
 
 func TasksDelete(c echo.Context) error {
 	ctx := c.Request().Context()
+	authUser := helpers.GetAuthUser(c)
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, "task not found")
 	}
 	task := models.Task{ID: id}
-	if err := models.DB.NewSelect().Model(&task).WherePK("id").Scan(ctx); err != nil {
+	query := models.DB.NewSelect().Model(&task).
+		Where("id = ?", task.ID).
+		Where("user_id = ?", authUser.ID)
+	if err := query.Scan(ctx); err != nil {
 		return fmt.Errorf("tasks delete error: %v", err)
 	} else if _, err := models.DB.NewDelete().Model(&task).WherePK().Exec(ctx); err != nil {
 		return fmt.Errorf("tasks delete error: %v", err)

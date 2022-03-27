@@ -12,6 +12,7 @@ func NewApp() *cli.App {
 		Version: "0.0.0",
 		Flags: []cli.Flag{
 			&cli.StringFlag{Name: "dsnDb", Value: "postgresql://go_todo:go_todo@localhost:5432/go_todo?sslmode=disable", EnvVars: []string{"DSN_DB"}},
+			&cli.StringFlag{Name: "secret", Value: "random-secret", EnvVars: []string{"SECRET"}},
 		},
 		Before: hooks.Before,
 		Commands: cli.Commands{

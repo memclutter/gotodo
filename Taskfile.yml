@@ -1,15 +1,19 @@
 version: '3'
+vars:
+  DB_URL: 'postgres://go_todo:go_todo@localhost:5432/go_todo?sslmode=disable'
 tasks:
   migrations-create:
-    dir: deployment/compose
     cmds:
       - migrate create -dir migrations -ext sql {{.CLI_ARGS}}
   migrations-up:
-    dir: deployment/compose
-    vars:
-      DB_URL: 'postgres://go_todo:go_todo@localhost:5432/go_todo?sslmode=disable'
     cmds:
       - migrate -path migrations -database '{{.DB_URL}}' up
+  migrations-down:
+    cmds:
+      - migrate -path migrations -database '{{.DB_URL}}' down 1
+  generate:
+    cmds:
+      - go generate ./...
   build:
     dir: deployment/compose
     cmds:
@@ -26,3 +30,12 @@ tasks:
     dir: deployment/compose
     cmds:
       - docker-compose up -d --no-build
+  down:
+    dir: deployment/compose
+    cmds:
+      - docker-compose down
+
+  clean:
+    dir: deployment/compose
+    cmds:
+      - docker-compose down --volume --remove-orphans

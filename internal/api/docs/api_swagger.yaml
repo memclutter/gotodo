@@ -1,0 +1,215 @@
+basePath: /
+definitions:
+  models.Session:
+    properties:
+      dateCreated:
+        type: string
+      dateExpired:
+        type: string
+      id:
+        type: integer
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: integer
+    type: object
+  models.Task:
+    properties:
+      dateCreated:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: integer
+      title:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      sessions:
+        items:
+          $ref: '#/definitions/models.Session'
+        type: array
+      status:
+        type: integer
+    type: object
+  schemas.AuthLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  schemas.AuthLoginResponse:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        $ref: '#/definitions/models.Session'
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  schemas.AuthRefreshRequest:
+    properties:
+      refresh_token:
+        type: string
+    type: object
+  schemas.AuthRefreshResponse:
+    properties:
+      accessToken:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  schemas.AuthRegistrationRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  schemas.TasksListResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+      total_count:
+        type: integer
+    type: object
+host: localhost
+info:
+  contact: {}
+  description: gotodo api
+  title: gotodo
+  version: "1.0"
+paths:
+  /auth/login/:
+    post:
+      consumes:
+      - application/json
+      description: Login in new sessions
+      parameters:
+      - description: Request data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.AuthLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schemas.AuthLoginResponse'
+      summary: Login
+      tags:
+      - auth
+  /auth/refresh/:
+    post:
+      consumes:
+      - application/json
+      description: Refresh current session
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.AuthRefreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schemas.AuthRefreshResponse'
+      summary: Refresh
+      tags:
+      - auth
+  /auth/registration/:
+    post:
+      consumes:
+      - application/json
+      description: Register new user
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.AuthRegistrationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: ""
+      summary: Registration
+      tags:
+      - auth
+  /tasks/:
+    get:
+      consumes:
+      - application/json
+      description: Get tasks list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schemas.TasksListResponse'
+      security:
+      - ApiHeaderAuth: []
+      summary: List
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Create new tasks
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Task'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Task'
+      security:
+      - ApiHeaderAuth: []
+      summary: Create
+      tags:
+      - tasks
+securityDefinitions:
+  ApiKeyHeader:
+    in: Header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
+tags:
+- description: Auth endpoints
+  name: auth
+- description: Tasks endpoint
+  name: tasks

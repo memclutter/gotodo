@@ -2,6 +2,7 @@ package hooks
 
 import (
 	"database/sql"
+	"github.com/memclutter/gotodo/internal/config"
 	"github.com/memclutter/gotodo/internal/models"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
@@ -11,5 +12,6 @@ import (
 
 func Before(c *cli.Context) error {
 	models.DB = bun.NewDB(sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(c.String("dsnDb")))), pgdialect.New())
+	config.Config.Secret = c.String("secret")
 	return nil
 }
