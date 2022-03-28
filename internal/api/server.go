@@ -3,10 +3,10 @@ package api
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 	_ "github.com/memclutter/gotodo/internal/api/docs"
 	"github.com/memclutter/gotodo/internal/api/endpoints"
 	"github.com/memclutter/gotodo/internal/api/middleware"
+	"github.com/memclutter/gotodo/internal/config"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"net/http"
 )
@@ -31,22 +31,22 @@ import (
 // @tag.description Tasks endpoint
 func RunServer() error {
 	e := echo.New()
-	e.Debug = true
-	e.Logger.SetLevel(log.DEBUG)
+	e.Debug = config.Config.Debug
+
+	corsMiddleware := middleware.NewCors()
+	authMiddleware := middleware.NewAuth()
+
+	e.Use(corsMiddleware)
 
 	e.GET("/docs/*", echoSwagger.EchoWrapHandler(echoSwagger.InstanceName("api")))
 
-	authPublic := e.Group("/auth")
-	authProtected := e.Group("/auth", middleware.User)
-	{
-		authPublic.POST("/login/", endpoints.AuthLogin)
-		authPublic.POST("/refresh/", endpoints.AuthRefresh)
-		authPublic.POST("/registration/", endpoints.AuthRegistration)
-		authProtected.GET("/info/", endpoints.AuthInfo, middleware.User)
-		authProtected.DELETE("/logout/", endpoints.AuthLogout, middleware.User)
-	}
+	e.POST("/auth/login/", endpoints.AuthLogin)
+	e.POST("/auth/refresh/", endpoints.AuthRefresh)
+	e.POST("/auth/registration/", endpoints.AuthRegistration)
+	e.GET("/auth/info/", endpoints.AuthInfo, authMiddleware)
+	e.DELETE("/auth/logout/", endpoints.AuthLogout, authMiddleware)
 
-	tasks := e.Group("/tasks", middleware.User)
+	tasks := e.Group("/tasks", authMiddleware)
 	{
 		tasks.GET("/", endpoints.TasksList)
 		tasks.POST("/", endpoints.TasksCreate)
