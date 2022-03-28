@@ -347,7 +347,7 @@ const docTemplate_api = `{
 var SwaggerInfo_api = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost",
-	BasePath:         "/",
+	BasePath:         "/api/",
 	Schemes:          []string{},
 	Title:            "gotodo",
 	Description:      "gotodo api",

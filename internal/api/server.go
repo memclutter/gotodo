@@ -18,7 +18,7 @@ import (
 // @description gotodo api
 //
 // @host localhost
-// @BasePath /
+// @BasePath /api/
 //
 // @securityDefinitions.apiKey ApiKeyHeader
 // @in Header
