@@ -26,7 +26,8 @@ func TasksList(c echo.Context) (err error) {
 	totalCount := 0
 	tasks := make([]models.Task, 0)
 	query := models.DB.NewSelect().Model(&tasks).
-		Where("user_id = ?", authUser.ID)
+		Where("user_id = ?", authUser.ID).
+		OrderExpr("date_created")
 	if totalCount, err = query.ScanAndCount(ctx); err != nil {
 		return fmt.Errorf("tasks get error: %v", err)
 	}
