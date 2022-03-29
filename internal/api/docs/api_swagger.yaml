@@ -98,6 +98,23 @@ info:
   title: gotodo
   version: "1.0"
 paths:
+  /auth/info/:
+    get:
+      consumes:
+      - application/json
+      description: Get current session info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      security:
+      - ApiHeaderAuth: []
+      summary: Info
+      tags:
+      - auth
   /auth/login/:
     post:
       consumes:
@@ -118,6 +135,21 @@ paths:
           schema:
             $ref: '#/definitions/schemas.AuthLoginResponse'
       summary: Login
+      tags:
+      - auth
+  /auth/logout/:
+    post:
+      consumes:
+      - application/json
+      description: Logout current session
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: ""
+      security:
+      - ApiHeaderAuth: []
+      summary: Logout
       tags:
       - auth
   /auth/refresh/:
@@ -200,6 +232,77 @@ paths:
       security:
       - ApiHeaderAuth: []
       summary: Create
+      tags:
+      - tasks
+  /tasks/{id}/:
+    delete:
+      consumes:
+      - application/json
+      description: Delete task
+      parameters:
+      - description: Task identifier
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: ""
+      security:
+      - ApiHeaderAuth: []
+      summary: Delete
+      tags:
+      - tasks
+    get:
+      consumes:
+      - application/json
+      description: Get task details
+      parameters:
+      - description: Task identifier
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Task'
+      security:
+      - ApiHeaderAuth: []
+      summary: Retrieve
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Update task
+      parameters:
+      - description: Task identifier
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Task'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Task'
+      security:
+      - ApiHeaderAuth: []
+      summary: Update
       tags:
       - tasks
 securityDefinitions:

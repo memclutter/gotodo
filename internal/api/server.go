@@ -44,7 +44,7 @@ func RunServer() error {
 	e.POST("/auth/refresh/", endpoints.AuthRefresh)
 	e.POST("/auth/registration/", endpoints.AuthRegistration)
 	e.GET("/auth/info/", endpoints.AuthInfo, authMiddleware)
-	e.DELETE("/auth/logout/", endpoints.AuthLogout, authMiddleware)
+	e.POST("/auth/logout/", endpoints.AuthLogout, authMiddleware)
 
 	tasks := e.Group("/tasks", authMiddleware)
 	{

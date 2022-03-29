@@ -16,6 +16,34 @@ const docTemplate_api = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth/info/": {
+            "get": {
+                "security": [
+                    {
+                        "ApiHeaderAuth": []
+                    }
+                ],
+                "description": "Get current session info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Info",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/login/": {
             "post": {
                 "description": "Login in new sessions",
@@ -46,6 +74,31 @@ const docTemplate_api = `{
                         "schema": {
                             "$ref": "#/definitions/schemas.AuthLoginResponse"
                         }
+                    }
+                }
+            }
+        },
+        "/auth/logout/": {
+            "post": {
+                "security": [
+                    {
+                        "ApiHeaderAuth": []
+                    }
+                ],
+                "description": "Logout current session",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Logout",
+                "responses": {
+                    "204": {
+                        "description": ""
                     }
                 }
             }
@@ -176,6 +229,119 @@ const docTemplate_api = `{
                         "schema": {
                             "$ref": "#/definitions/models.Task"
                         }
+                    }
+                }
+            }
+        },
+        "/tasks/{id}/": {
+            "get": {
+                "security": [
+                    {
+                        "ApiHeaderAuth": []
+                    }
+                ],
+                "description": "Get task details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Retrieve",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Task identifier",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Task"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiHeaderAuth": []
+                    }
+                ],
+                "description": "Update task",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Update",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Task identifier",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Task"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiHeaderAuth": []
+                    }
+                ],
+                "description": "Delete task",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Delete",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Task identifier",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
                     }
                 }
             }

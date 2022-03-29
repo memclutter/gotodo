@@ -39,3 +39,5 @@ tasks:
     dir: deployment/compose
     cmds:
       - docker-compose down --volume --remove-orphans
+      - rm -rf ../../web/spa/dist/
+      - rm -rf ../../web/spa/.nuxt/

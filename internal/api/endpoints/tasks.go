@@ -18,7 +18,7 @@ import (
 // @Tags			tasks
 // @Accept			json
 // @Produce			json
-// @Success			200	{object}				schemas.TasksListResponse
+// @Success			200				{object}	schemas.TasksListResponse
 // @Security		ApiHeaderAuth
 func TasksList(c echo.Context) (err error) {
 	ctx := c.Request().Context()
@@ -45,7 +45,7 @@ func TasksList(c echo.Context) (err error) {
 // @Accept			json
 // @Produce			json
 // @Param			request			body		models.Task		true	"Request body"
-// @Success			201	{object}				models.Task
+// @Success			201				{object}	models.Task
 // @Security		ApiHeaderAuth
 func TasksCreate(c echo.Context) (err error) {
 	ctx := c.Request().Context()
@@ -61,6 +61,17 @@ func TasksCreate(c echo.Context) (err error) {
 	return c.JSON(http.StatusCreated, task)
 }
 
+// TasksRetrieve godoc
+//
+// @Router 			/tasks/{id}/	[get]
+// @Summary			Retrieve
+// @Description		Get task details
+// @Tags			tasks
+// @Accept			json
+// @Produce 		json
+// @Param			id				path		integer			true	"Task identifier"
+// @Success			200				{object}	models.Task
+// @Security		ApiHeaderAuth
 func TasksRetrieve(c echo.Context) error {
 	ctx := c.Request().Context()
 	authUser := helpers.GetAuthUser(c)
@@ -78,6 +89,18 @@ func TasksRetrieve(c echo.Context) error {
 	return c.JSON(http.StatusOK, task)
 }
 
+// TasksUpdate godoc
+//
+// @Router			/tasks/{id}/	[put]
+// @Summary			Update
+// @Description		Update task
+// @Tags			tasks
+// @Accept			json
+// @Produce			json
+// @Param			id				path		integer			true	"Task identifier"
+// @Param			request			body		models.Task		true	"Request body"
+// @Success			200				{object}	models.Task
+// @Security		ApiHeaderAuth
 func TasksUpdate(c echo.Context) error {
 	ctx := c.Request().Context()
 	authUser := helpers.GetAuthUser(c)
@@ -101,6 +124,17 @@ func TasksUpdate(c echo.Context) error {
 	return c.JSON(http.StatusOK, task)
 }
 
+// TasksDelete godoc
+//
+// @Router			/tasks/{id}/	[delete]
+// @Summary			Delete
+// @Description		Delete task
+// @Tags			tasks
+// @Accept			json
+// @Produce			json
+// @Param			id				path		integer			true	"Task identifier"
+// @Success			204
+// @Security		ApiHeaderAuth
 func TasksDelete(c echo.Context) error {
 	ctx := c.Request().Context()
 	authUser := helpers.GetAuthUser(c)

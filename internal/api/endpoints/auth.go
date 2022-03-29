@@ -16,14 +16,14 @@ import (
 
 // AuthLogin godoc
 //
-// @Router 			/auth/login/	[post]
+// @Router 			/auth/login/				[post]
 // @Summary			Login
 // @Description		Login in new sessions
 // @Tags			auth
 // @Accept			json
 // @Produce			json
-// @Param			request			body		schemas.AuthLoginRequest	true	"Request data"
-// @Success			200	{object}				schemas.AuthLoginResponse
+// @Param			request						body		schemas.AuthLoginRequest	true	"Request data"
+// @Success			200							{object}	schemas.AuthLoginResponse
 func AuthLogin(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := schemas.AuthLoginRequest{}
@@ -69,14 +69,14 @@ func AuthLogin(c echo.Context) error {
 
 // AuthRefresh godoc
 //
-// @Router 			/auth/refresh/		[post]
+// @Router 			/auth/refresh/				[post]
 // @Summary 		Refresh
 // @Description		Refresh current session
 // @Tags			auth
 // @Accept			json
 // @Produce			json
-// @Param			request				body		schemas.AuthRefreshRequest	true	"Request body"
-// @Success			200	{object}					schemas.AuthRefreshResponse
+// @Param			request						body		schemas.AuthRefreshRequest	true	"Request body"
+// @Success			200							{object}	schemas.AuthRefreshResponse
 func AuthRefresh(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := schemas.AuthRefreshRequest{}
@@ -109,19 +109,29 @@ func AuthRefresh(c echo.Context) error {
 	})
 }
 
+// AuthLogout godoc
+//
+// @Router			/auth/logout/				[post]
+// @Summary 		Logout
+// @Description		Logout current session
+// @Tags			auth
+// @Accept			json
+// @Produce			json
+// @Success			204
+// @Security		ApiHeaderAuth
 func AuthLogout(c echo.Context) error {
 	return nil
 }
 
 // AuthRegistration godoc
 //
-// @Router 			/auth/registration/		[post]
+// @Router 			/auth/registration/			[post]
 // @Summary			Registration
 // @Description		Register new user
 // @Tags			auth
 // @Accept 			json
 // @Produce 		json
-// @Param			request					body		schemas.AuthRegistrationRequest	true	"Request body"
+// @Param			request						body		schemas.AuthRegistrationRequest	true	"Request body"
 // @Success			201
 func AuthRegistration(c echo.Context) error {
 	ctx := c.Request().Context()
@@ -159,6 +169,16 @@ func AuthRegistration(c echo.Context) error {
 	return c.NoContent(http.StatusCreated)
 }
 
+// AuthInfo	godoc
+//
+// @Router			/auth/info/					[get]
+// @Summary			Info
+// @Description		Get current session info
+// @Tags			auth
+// @Accept			json
+// @Produce			json
+// @Success			200							{object}	models.User
+// @Security		ApiHeaderAuth
 func AuthInfo(c echo.Context) error {
 	return nil
 }
