@@ -6,10 +6,9 @@
 
 <script>
 export default {
-  name: "LoginPage"
+  name: "LoginPage",
+  meta: {
+    isAuth: false
+  }
 }
 </script>
-
-<style scoped>
-
-</style>

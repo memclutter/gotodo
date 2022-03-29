@@ -56,5 +56,12 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+  },
+
+  // Router configuration: https://ru.nuxtjs.org/api/configuration-router/
+  router: {
+    middleware: [
+      'auth',
+    ]
   }
 }
