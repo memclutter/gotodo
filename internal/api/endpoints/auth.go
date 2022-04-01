@@ -1,6 +1,8 @@
 package endpoints
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -9,119 +11,11 @@ import (
 	"github.com/memclutter/gotodo/internal/config"
 	"github.com/memclutter/gotodo/internal/models"
 	"github.com/memclutter/gotodo/internal/security"
+	"github.com/uptrace/bun"
 	"net/http"
 	"strings"
 	"time"
 )
-
-// AuthLogin godoc
-//
-// @Router 			/auth/login/				[post]
-// @Summary			Login
-// @Description		Login in new sessions
-// @Tags			auth
-// @Accept			json
-// @Produce			json
-// @Param			request						body		schemas.AuthLoginRequest	true	"Request data"
-// @Success			200							{object}	schemas.AuthLoginResponse
-func AuthLogin(c echo.Context) error {
-	ctx := c.Request().Context()
-	req := schemas.AuthLoginRequest{}
-	if err := c.Bind(&req); err != nil {
-		return fmt.Errorf("auth login error: %v", err)
-	}
-	user := models.User{}
-	query := models.DB.NewSelect().Model(&user).
-		Where("lower(email) = ?", strings.ToLower(req.Email)).
-		Where("status = ?", models.UserStatusActive)
-	if err := query.Scan(ctx); err != nil {
-		return fmt.Errorf("auth login error: %v", err)
-	}
-	if !security.PasswordValidate(req.Password, user.PwHash) {
-		return c.JSON(http.StatusBadRequest, "Invalid credentials")
-	}
-	dateCreated := time.Now().UTC()
-	session := models.Session{
-		UserID:      user.ID,
-		Token:       security.TokenMustGenerate(32),
-		DateCreated: dateCreated,
-		DateExpired: dateCreated.Add(30 * 24 * time.Hour),
-	}
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, helpers.JwtClaims{
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: dateCreated.Add(2 * time.Minute).Unix(),
-		},
-		ID:    user.ID,
-		Email: user.Email,
-	}).SignedString([]byte(config.Config.Secret))
-	if err != nil {
-		return fmt.Errorf("auth login error: %v", err)
-	} else if _, err := models.DB.NewInsert().Model(&session).Exec(ctx); err != nil {
-		return fmt.Errorf("auth login error: %v", err)
-	}
-
-	return c.JSON(http.StatusOK, schemas.AuthLoginResponse{
-		User:         user,
-		AccessToken:  token,
-		RefreshToken: session,
-	})
-}
-
-// AuthRefresh godoc
-//
-// @Router 			/auth/refresh/				[post]
-// @Summary 		Refresh
-// @Description		Refresh current session
-// @Tags			auth
-// @Accept			json
-// @Produce			json
-// @Param			request						body		schemas.AuthRefreshRequest	true	"Request body"
-// @Success			200							{object}	schemas.AuthRefreshResponse
-func AuthRefresh(c echo.Context) error {
-	ctx := c.Request().Context()
-	req := schemas.AuthRefreshRequest{}
-	if err := c.Bind(&req); err != nil {
-		return fmt.Errorf("auth refresh error: %v", err)
-	}
-	session := models.Session{}
-	query := models.DB.NewSelect().Model(&session).
-		Relation("User").
-		Where("token = ?", req.RefreshToken).
-		Where("date_expired > NOW()")
-	if err := query.Scan(ctx); err != nil {
-		return fmt.Errorf("auth refresh error: %v", err)
-	}
-	dateCreated := time.Now().UTC()
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, helpers.JwtClaims{
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: dateCreated.Add(2 * time.Minute).Unix(),
-		},
-		ID:    session.User.ID,
-		Email: session.User.Email,
-	}).SignedString([]byte(config.Config.Secret))
-	if err != nil {
-		return fmt.Errorf("auth refresh error: %v", err)
-	}
-
-	return c.JSON(http.StatusOK, schemas.AuthRefreshResponse{
-		User:        session.User,
-		AccessToken: token,
-	})
-}
-
-// AuthLogout godoc
-//
-// @Router			/auth/logout/				[post]
-// @Summary 		Logout
-// @Description		Logout current session
-// @Tags			auth
-// @Accept			json
-// @Produce			json
-// @Success			204
-// @Security		ApiHeaderAuth
-func AuthLogout(c echo.Context) error {
-	return nil
-}
 
 // AuthRegistration godoc
 //
@@ -133,6 +27,8 @@ func AuthLogout(c echo.Context) error {
 // @Produce 		json
 // @Param			request						body		schemas.AuthRegistrationRequest	true	"Request body"
 // @Success			201
+// @Failure			400
+// @Failure			500
 func AuthRegistration(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := schemas.AuthRegistrationRequest{}
@@ -169,16 +65,134 @@ func AuthRegistration(c echo.Context) error {
 	return c.NoContent(http.StatusCreated)
 }
 
-// AuthInfo	godoc
+// AuthConfirmation godoc
 //
-// @Router			/auth/info/					[get]
-// @Summary			Info
-// @Description		Get current session info
+// @Router 			/auth/confirmation/ 		[post]
+// @Summary			Confirmation
+// @Description		User confirmation after registration
 // @Tags			auth
 // @Accept			json
 // @Produce			json
-// @Success			200							{object}	models.User
-// @Security		ApiHeaderAuth
-func AuthInfo(c echo.Context) error {
-	return c.JSON(http.StatusOK, helpers.GetAuthUser(c))
+// @Param			request						body		schemas.AuthConfirmation		true	"Request body"
+// @Success			204
+// @Failure			400
+// @Failure			500
+func AuthConfirmation(c echo.Context) error {
+	ctx := c.Request().Context()
+	req := schemas.AuthConfirmation{}
+	if err := c.Bind(&req); err != nil {
+		return fmt.Errorf("auth confirmation error: %v", err)
+	}
+	confirmation := models.Confirmation{}
+	query := models.DB.NewSelect().Model(&confirmation).Relation("User").Where("token = ?", req.Token)
+	if err := query.Scan(ctx); err == sql.ErrNoRows {
+		return c.NoContent(http.StatusBadRequest)
+	} else if err != nil {
+		return fmt.Errorf("auth confimration error: %v", err)
+	}
+	if confirmation.DateExpired.After(time.Now().UTC()) {
+		if _, err := models.DB.NewDelete().Model(&confirmation).WherePK().Exec(ctx); err != nil {
+			return fmt.Errorf("auth confirmation error: %v", err)
+		}
+		return c.NoContent(http.StatusBadRequest)
+	}
+	if err := models.DB.RunInTx(ctx, &sql.TxOptions{}, func(ctx context.Context, tx bun.Tx) error {
+		user := confirmation.User
+		user.Status = models.UserStatusActive
+		if _, err := tx.NewUpdate().Model(&user).WherePK().Exec(ctx); err != nil {
+			return fmt.Errorf("run in tx error: %v", err)
+		}
+		if _, err := tx.NewDelete().Model(&confirmation).WherePK().Exec(ctx); err != nil {
+			return fmt.Errorf("run in tx error: %v", err)
+		}
+		return nil
+	}); err != nil {
+		return fmt.Errorf("auth confirmation error: %v", err)
+	}
+	return c.NoContent(http.StatusOK)
+}
+
+// AuthLogin godoc
+//
+// @Router 			/auth/login/				[post]
+// @Summary			Login
+// @Description		Login in new sessions
+// @Tags			auth
+// @Accept			json
+// @Produce			json
+// @Param			request						body		schemas.AuthLoginRequest	true	"Request data"
+// @Success			200							{object}	schemas.AuthLoginResponse
+func AuthLogin(c echo.Context) error {
+	ctx := c.Request().Context()
+	req := schemas.AuthLoginRequest{}
+	if err := c.Bind(&req); err != nil {
+		return fmt.Errorf("auth login error: %v", err)
+	}
+	user := models.User{}
+	query := models.DB.NewSelect().Model(&user).
+		Where("lower(email) = ?", strings.ToLower(req.Email)).
+		Where("status = ?", models.UserStatusActive)
+	if err := query.Scan(ctx); err != nil {
+		return fmt.Errorf("auth login error: %v", err)
+	}
+	if !security.PasswordValidate(req.Password, user.PwHash) {
+		return c.JSON(http.StatusBadRequest, "Invalid credentials")
+	}
+	baseRes, err := helpers.CreateTokens(user)
+	if err != nil {
+		return fmt.Errorf("auth login error: %v", err)
+	}
+	return c.JSON(http.StatusOK, schemas.AuthLoginResponse{
+		AuthBaseResponse: baseRes,
+	})
+}
+
+// AuthRefresh godoc
+//
+// @Router			/auth/refresh/				[post]
+// @Summary			Refresh
+// @Description		Refresh exists session
+// @Tags			auth
+// @Tags			auth
+// @Accept			json
+// @Produce			json
+// @Param			request						body		schemas.AuthRefreshRequest	true	"Request data"
+// @Success			200							{object}	schemas.AuthRefreshResponse
+// @Failure			400
+// @Failure			500
+func AuthRefresh(c echo.Context) error {
+	ctx := c.Request().Context()
+	req := schemas.AuthRefreshRequest{}
+	if err := c.Bind(&req); err != nil {
+		return fmt.Errorf("auth refresh error: %v", err)
+	}
+	refreshTokenParsed, err := jwt.ParseWithClaims(req.RefreshToken, helpers.JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(config.Config.Secret), nil
+	})
+	if err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	} else if !refreshTokenParsed.Valid {
+		return c.NoContent(http.StatusBadRequest)
+	}
+	refreshTokenClaims, ok := refreshTokenParsed.Claims.(*helpers.JwtClaims)
+	if !ok {
+		return c.NoContent(http.StatusBadRequest)
+	}
+	user := models.User{}
+	query := models.DB.NewSelect().Model(&user).
+		Where("id = ?", refreshTokenClaims.ID).
+		Where("lower(email) = ?", strings.ToLower(refreshTokenClaims.Email)).
+		Where("status = ?", models.UserStatusActive)
+	if err := query.Scan(ctx); err == sql.ErrNoRows {
+		return c.NoContent(http.StatusBadRequest)
+	} else if err != nil {
+		return fmt.Errorf("auth refresh error: %v", err)
+	}
+	baseRes, err := helpers.CreateTokens(user)
+	if err != nil {
+		return fmt.Errorf("auth refresh error: %v", err)
+	}
+	return c.JSON(http.StatusOK, schemas.AuthLoginResponse{
+		AuthBaseResponse: baseRes,
+	})
 }

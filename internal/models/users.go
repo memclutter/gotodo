@@ -12,8 +12,6 @@ type User struct {
 	PwHash   string `json:"-"`
 	Password string `bun:"-" json:"password,omitempty"`
 	Status   int    `json:"status"`
-
-	Sessions []Session `bun:"rel:has-many,join:id=user_id" json:"sessions"`
 }
 
 const (

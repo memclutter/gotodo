@@ -8,7 +8,6 @@ import (
 	"github.com/memclutter/gotodo/internal/api/middleware"
 	"github.com/memclutter/gotodo/internal/config"
 	echoSwagger "github.com/swaggo/echo-swagger"
-	"net/http"
 )
 
 // RunServer godoc
@@ -40,11 +39,10 @@ func RunServer() error {
 
 	e.GET("/docs/*", echoSwagger.EchoWrapHandler(echoSwagger.InstanceName("api")))
 
+	e.POST("/auth/registration/", endpoints.AuthRegistration)
+	e.POST("/auth/confirmation/", endpoints.AuthConfirmation)
 	e.POST("/auth/login/", endpoints.AuthLogin)
 	e.POST("/auth/refresh/", endpoints.AuthRefresh)
-	e.POST("/auth/registration/", endpoints.AuthRegistration)
-	e.GET("/auth/info/", endpoints.AuthInfo, authMiddleware)
-	e.POST("/auth/logout/", endpoints.AuthLogout, authMiddleware)
 
 	tasks := e.Group("/tasks", authMiddleware)
 	{
@@ -54,10 +52,6 @@ func RunServer() error {
 		tasks.PUT("/:id/", endpoints.TasksUpdate)
 		tasks.DELETE("/:id/", endpoints.TasksDelete)
 	}
-
-	e.GET("/_routes.json", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, e.Routes())
-	})
 
 	return e.Start(":8000")
 }
