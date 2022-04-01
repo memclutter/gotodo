@@ -180,5 +180,5 @@ func AuthRegistration(c echo.Context) error {
 // @Success			200							{object}	models.User
 // @Security		ApiHeaderAuth
 func AuthInfo(c echo.Context) error {
-	return nil
+	return c.JSON(http.StatusOK, helpers.GetAuthUser(c))
 }
