@@ -132,7 +132,9 @@ func AuthLogin(c echo.Context) error {
 	query := models.DB.NewSelect().Model(&user).
 		Where("lower(email) = ?", strings.ToLower(req.Email)).
 		Where("status = ?", models.UserStatusActive)
-	if err := query.Scan(ctx); err != nil {
+	if err := query.Scan(ctx); err == sql.ErrNoRows {
+		return c.NoContent(http.StatusBadRequest)
+	} else if err != nil {
 		return fmt.Errorf("auth login error: %v", err)
 	}
 	if !security.PasswordValidate(req.Password, user.PwHash) {
