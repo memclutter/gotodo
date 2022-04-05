@@ -5,7 +5,7 @@ import responseFulfilled from "@/apis/interceptors/responseFulfilled";
 import responseRejected from "@/apis/interceptors/responseRejected";
 
 const baseAxios = axios.create({
-    baseURL: '/api/'
+    baseURL: 'http://localhost:8000/'
 });
 
 baseAxios.interceptors.request.use(requestFulfilled, requestRejected)
