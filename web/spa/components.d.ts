@@ -23,6 +23,7 @@ declare module 'vue' {
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
     LoginForm: typeof import('./src/components/LoginForm.vue')['default']
     Navigation: typeof import('./src/components/Navigation.vue')['default']
+    RegistrationForm: typeof import('./src/components/RegistrationForm.vue')['default']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
