@@ -15,15 +15,11 @@ import {reactive} from "vue";
 const menuItems = reactive([
   {
     title: 'Login',
-    to: {
-      name: 'login'
-    }
+    to: 'login'
   },
   {
     title: 'Registration',
-    to: {
-      name: 'registration'
-    }
+    to: 'registration'
   }
 ])
 </script>
