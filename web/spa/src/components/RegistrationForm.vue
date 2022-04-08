@@ -3,6 +3,7 @@ import {reactive, ref} from "vue";
 import authRegistration from '@/apis/endpoints/auth/registration'
 import type {FormInstance} from "element-plus";
 
+const formLoading = ref(false)
 const formRef = ref<FormInstance>()
 const form = reactive({
   email: '',
@@ -25,6 +26,7 @@ const rules = reactive({
 
 const submit = async (formEl: ref<FormInstance> | undefined) => {
   if (!formEl) return
+  formLoading.value = true
   await formEl.validate((valid, fields) => {
     if (valid) {
       const {data, isFinished} = authRegistration(form)
@@ -33,11 +35,13 @@ const submit = async (formEl: ref<FormInstance> | undefined) => {
       console.log('error', fields)
     }
   })
+  formLoading.value = false
 }
 </script>
 
 <template>
   <el-form
+    v-loading="formLoading"
     ref="formRef"
     label-width="120px"
     :model="form"
