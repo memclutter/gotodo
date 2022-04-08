@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import {reactive, ref} from "vue";
+import {h, reactive, ref} from "vue";
 import authRegistration from '@/apis/endpoints/auth/registration'
 import type {FormInstance} from "element-plus";
+import 'element-plus/es/components/message/style/css'
+import {ElMessage} from "element-plus";
 
 const formLoading = ref(false)
 const formRef = ref<FormInstance>()
@@ -24,13 +26,14 @@ const rules = reactive({
   ]
 })
 
-const submit = async (formEl: ref<FormInstance> | undefined) => {
+const submit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formLoading.value = true
   await formEl.validate((valid, fields) => {
     if (valid) {
-      const {data, isFinished} = authRegistration(form)
-      console.log(data)
+      authRegistration(form)
+      ElMessage('Registration success, please check email address')
+      formEl.resetFields()
     } else {
       console.log('error', fields)
     }
@@ -46,6 +49,7 @@ const submit = async (formEl: ref<FormInstance> | undefined) => {
     label-width="120px"
     :model="form"
     :rules="rules"
+    @submit.prevent.stop="submit(formRef)"
   >
     <el-form-item label="Email" prop="email">
       <el-input type="email" v-model="form.email"/>
@@ -57,7 +61,7 @@ const submit = async (formEl: ref<FormInstance> | undefined) => {
       <el-input type="password" v-model="form.repeatPassword"/>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submit(formRef)">Registration</el-button>
+      <el-button type="primary" native-type="submit">Registration</el-button>
     </el-form-item>
   </el-form>
 </template>
