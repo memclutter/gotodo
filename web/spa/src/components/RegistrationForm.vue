@@ -3,7 +3,7 @@ import {reactive, ref} from "vue";
 import authRegistration from '@/apis/endpoints/auth/registration'
 import type {FormInstance} from "element-plus";
 
-const ruleFormRef = ref<FormInstance>()
+const formRef = ref<FormInstance>()
 const form = reactive({
   email: '',
   password: '',
@@ -23,7 +23,7 @@ const rules = reactive({
   ]
 })
 
-const submit = async (formEl: FormInstance | undefined) => {
+const submit = async (formEl: ref<FormInstance> | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
@@ -38,7 +38,7 @@ const submit = async (formEl: FormInstance | undefined) => {
 
 <template>
   <el-form
-    ref="ruleFormRef"
+    ref="formRef"
     label-width="120px"
     :model="form"
     :rules="rules"
@@ -53,7 +53,7 @@ const submit = async (formEl: FormInstance | undefined) => {
       <el-input type="password" v-model="form.repeatPassword"/>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submit(ruleFormRef)">Registration</el-button>
+      <el-button type="primary" @click="submit(formRef)">Registration</el-button>
     </el-form-item>
   </el-form>
 </template>
