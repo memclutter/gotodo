@@ -1,7 +1,7 @@
 <template>
   <el-row justify="center" align="center">
     <el-col :span="8">
-      <el-card>
+      <el-card shadow="never">
         <RegistrationForm/>
       </el-card>
     </el-col>
