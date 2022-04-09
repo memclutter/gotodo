@@ -1,20 +1,5 @@
 basePath: /api/
 definitions:
-  models.Session:
-    properties:
-      dateCreated:
-        type: string
-      dateExpired:
-        type: string
-      id:
-        type: integer
-      token:
-        type: string
-      user:
-        $ref: '#/definitions/models.User'
-      user_id:
-        type: integer
-    type: object
   models.Task:
     properties:
       dateCreated:
@@ -31,6 +16,8 @@ definitions:
         $ref: '#/definitions/models.User'
       user_id:
         type: integer
+    required:
+    - title
     type: object
   models.User:
     properties:
@@ -40,12 +27,15 @@ definitions:
         type: integer
       password:
         type: string
-      sessions:
-        items:
-          $ref: '#/definitions/models.Session'
-        type: array
       status:
         type: integer
+    type: object
+  schemas.AuthConfirmation:
+    properties:
+      token:
+        type: string
+    required:
+    - token
     type: object
   schemas.AuthLoginRequest:
     properties:
@@ -53,24 +43,31 @@ definitions:
         type: string
       password:
         type: string
+    required:
+    - email
+    - password
     type: object
   schemas.AuthLoginResponse:
     properties:
       accessToken:
         type: string
       refreshToken:
-        $ref: '#/definitions/models.Session'
+        type: string
       user:
         $ref: '#/definitions/models.User'
     type: object
   schemas.AuthRefreshRequest:
     properties:
-      refresh_token:
+      refreshToken:
         type: string
+    required:
+    - refreshToken
     type: object
   schemas.AuthRefreshResponse:
     properties:
       accessToken:
+        type: string
+      refreshToken:
         type: string
       user:
         $ref: '#/definitions/models.User'
@@ -81,6 +78,14 @@ definitions:
         type: string
       password:
         type: string
+    required:
+    - email
+    - password
+    type: object
+  schemas.Error:
+    properties:
+      message: {}
+      validationErrors: {}
     type: object
   schemas.TasksListResponse:
     properties:
@@ -98,21 +103,32 @@ info:
   title: gotodo
   version: "1.0"
 paths:
-  /auth/info/:
-    get:
+  /auth/confirmation/:
+    post:
       consumes:
       - application/json
-      description: Get current session info
+      description: User confirmation after registration
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.AuthConfirmation'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: ""
+        "400":
+          description: Validation error
           schema:
-            $ref: '#/definitions/models.User'
-      security:
-      - ApiHeaderAuth: []
-      summary: Info
+            $ref: '#/definitions/schemas.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      summary: Confirmation
       tags:
       - auth
   /auth/login/:
@@ -134,31 +150,24 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/schemas.AuthLoginResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
       summary: Login
-      tags:
-      - auth
-  /auth/logout/:
-    post:
-      consumes:
-      - application/json
-      description: Logout current session
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: ""
-      security:
-      - ApiHeaderAuth: []
-      summary: Logout
       tags:
       - auth
   /auth/refresh/:
     post:
       consumes:
       - application/json
-      description: Refresh current session
+      description: Refresh exists session
       parameters:
-      - description: Request body
+      - description: Request data
         in: body
         name: request
         required: true
@@ -171,8 +180,17 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/schemas.AuthRefreshResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
       summary: Refresh
       tags:
+      - auth
       - auth
   /auth/registration/:
     post:
@@ -191,6 +209,14 @@ paths:
       responses:
         "201":
           description: ""
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
       summary: Registration
       tags:
       - auth
@@ -206,6 +232,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/schemas.TasksListResponse'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
       security:
       - ApiHeaderAuth: []
       summary: List
@@ -229,6 +259,14 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Task'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
       security:
       - ApiHeaderAuth: []
       summary: Create
@@ -250,6 +288,12 @@ paths:
       responses:
         "204":
           description: ""
+        "404":
+          description: ""
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
       security:
       - ApiHeaderAuth: []
       summary: Delete
@@ -272,6 +316,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Task'
+        "404":
+          description: ""
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
       security:
       - ApiHeaderAuth: []
       summary: Retrieve
@@ -300,6 +350,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Task'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
       security:
       - ApiHeaderAuth: []
       summary: Update

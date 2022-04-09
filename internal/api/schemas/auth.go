@@ -5,12 +5,12 @@ import (
 )
 
 type AuthRegistrationRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
 }
 
 type AuthConfirmation struct {
-	Token string `json:"token"`
+	Token string `json:"token" validate:"required"`
 }
 
 type AuthBaseResponse struct {
@@ -20,8 +20,8 @@ type AuthBaseResponse struct {
 }
 
 type AuthLoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
 }
 
 type AuthLoginResponse struct {
@@ -29,7 +29,7 @@ type AuthLoginResponse struct {
 }
 
 type AuthRefreshRequest struct {
-	RefreshToken string `json:"refreshToken"`
+	RefreshToken string `json:"refreshToken" validate:"required"`
 }
 
 type AuthRefreshResponse struct {

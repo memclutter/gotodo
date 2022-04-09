@@ -16,14 +16,9 @@ const docTemplate_api = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/info/": {
-            "get": {
-                "security": [
-                    {
-                        "ApiHeaderAuth": []
-                    }
-                ],
-                "description": "Get current session info",
+        "/auth/confirmation/": {
+            "post": {
+                "description": "User confirmation after registration",
                 "consumes": [
                     "application/json"
                 ],
@@ -33,12 +28,32 @@ const docTemplate_api = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Info",
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                "summary": "Confirmation",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/schemas.AuthConfirmation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
                         }
                     }
                 }
@@ -74,38 +89,25 @@ const docTemplate_api = `{
                         "schema": {
                             "$ref": "#/definitions/schemas.AuthLoginResponse"
                         }
-                    }
-                }
-            }
-        },
-        "/auth/logout/": {
-            "post": {
-                "security": [
-                    {
-                        "ApiHeaderAuth": []
-                    }
-                ],
-                "description": "Logout current session",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Logout",
-                "responses": {
-                    "204": {
-                        "description": ""
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
                     }
                 }
             }
         },
         "/auth/refresh/": {
             "post": {
-                "description": "Refresh current session",
+                "description": "Refresh exists session",
                 "consumes": [
                     "application/json"
                 ],
@@ -113,12 +115,13 @@ const docTemplate_api = `{
                     "application/json"
                 ],
                 "tags": [
+                    "auth",
                     "auth"
                 ],
                 "summary": "Refresh",
                 "parameters": [
                     {
-                        "description": "Request body",
+                        "description": "Request data",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -132,6 +135,18 @@ const docTemplate_api = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/schemas.AuthRefreshResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
                         }
                     }
                 }
@@ -164,6 +179,18 @@ const docTemplate_api = `{
                 "responses": {
                     "201": {
                         "description": ""
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
                     }
                 }
             }
@@ -191,6 +218,12 @@ const docTemplate_api = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/schemas.TasksListResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
                         }
                     }
                 }
@@ -229,6 +262,18 @@ const docTemplate_api = `{
                         "schema": {
                             "$ref": "#/definitions/models.Task"
                         }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
                     }
                 }
             }
@@ -265,6 +310,15 @@ const docTemplate_api = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Task"
+                        }
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
                         }
                     }
                 }
@@ -310,6 +364,18 @@ const docTemplate_api = `{
                         "schema": {
                             "$ref": "#/definitions/models.Task"
                         }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
                     }
                 }
             },
@@ -342,37 +408,26 @@ const docTemplate_api = `{
                 "responses": {
                     "204": {
                         "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
                     }
                 }
             }
         }
     },
     "definitions": {
-        "models.Session": {
-            "type": "object",
-            "properties": {
-                "dateCreated": {
-                    "type": "string"
-                },
-                "dateExpired": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/models.User"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "models.Task": {
             "type": "object",
+            "required": [
+                "title"
+            ],
             "properties": {
                 "dateCreated": {
                     "type": "string"
@@ -409,19 +464,28 @@ const docTemplate_api = `{
                 "password": {
                     "type": "string"
                 },
-                "sessions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Session"
-                    }
-                },
                 "status": {
                     "type": "integer"
                 }
             }
         },
+        "schemas.AuthConfirmation": {
+            "type": "object",
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "schemas.AuthLoginRequest": {
             "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -438,7 +502,7 @@ const docTemplate_api = `{
                     "type": "string"
                 },
                 "refreshToken": {
-                    "$ref": "#/definitions/models.Session"
+                    "type": "string"
                 },
                 "user": {
                     "$ref": "#/definitions/models.User"
@@ -447,8 +511,11 @@ const docTemplate_api = `{
         },
         "schemas.AuthRefreshRequest": {
             "type": "object",
+            "required": [
+                "refreshToken"
+            ],
             "properties": {
-                "refresh_token": {
+                "refreshToken": {
                     "type": "string"
                 }
             }
@@ -459,6 +526,9 @@ const docTemplate_api = `{
                 "accessToken": {
                     "type": "string"
                 },
+                "refreshToken": {
+                    "type": "string"
+                },
                 "user": {
                     "$ref": "#/definitions/models.User"
                 }
@@ -466,6 +536,10 @@ const docTemplate_api = `{
         },
         "schemas.AuthRegistrationRequest": {
             "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -473,6 +547,13 @@ const docTemplate_api = `{
                 "password": {
                     "type": "string"
                 }
+            }
+        },
+        "schemas.Error": {
+            "type": "object",
+            "properties": {
+                "message": {},
+                "validationErrors": {}
             }
         },
         "schemas.TasksListResponse": {

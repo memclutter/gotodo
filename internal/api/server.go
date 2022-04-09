@@ -6,6 +6,7 @@ import (
 	_ "github.com/memclutter/gotodo/internal/api/docs"
 	"github.com/memclutter/gotodo/internal/api/endpoints"
 	"github.com/memclutter/gotodo/internal/api/middleware"
+	"github.com/memclutter/gotodo/internal/api/plugins"
 	"github.com/memclutter/gotodo/internal/config"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -36,6 +37,9 @@ func RunServer() error {
 	authMiddleware := middleware.NewAuth()
 
 	e.Use(corsMiddleware)
+
+	e.Validator = plugins.NewValidator()
+	e.HTTPErrorHandler = plugins.NewErrorHandler(e)
 
 	e.GET("/docs/*", echoSwagger.EchoWrapHandler(echoSwagger.InstanceName("api")))
 

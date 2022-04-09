@@ -19,6 +19,7 @@ import (
 // @Accept			json
 // @Produce			json
 // @Success			200				{object}	schemas.TasksListResponse
+// @Failure			500				{object}	schemas.Error					true	"Server error"
 // @Security		ApiHeaderAuth
 func TasksList(c echo.Context) (err error) {
 	ctx := c.Request().Context()
@@ -47,6 +48,8 @@ func TasksList(c echo.Context) (err error) {
 // @Produce			json
 // @Param			request			body		models.Task		true	"Request body"
 // @Success			201				{object}	models.Task
+// @Failure			400				{object}	schemas.Error					true	"Validation error"
+// @Failure			500				{object}	schemas.Error					true	"Server error"
 // @Security		ApiHeaderAuth
 func TasksCreate(c echo.Context) (err error) {
 	ctx := c.Request().Context()
@@ -54,6 +57,8 @@ func TasksCreate(c echo.Context) (err error) {
 	task := models.Task{}
 	if err = c.Bind(&task); err != nil {
 		return fmt.Errorf("tasks create error bind: %v", err)
+	} else if err := c.Validate(&task); err != nil {
+		return err
 	}
 	task.UserID = authUser.ID
 	if _, err = models.DB.NewInsert().Model(&task).Exec(ctx); err != nil {
@@ -72,6 +77,8 @@ func TasksCreate(c echo.Context) (err error) {
 // @Produce 		json
 // @Param			id				path		integer			true	"Task identifier"
 // @Success			200				{object}	models.Task
+// @Failure			404
+// @Failure			500				{object}	schemas.Error					true	"Server error"
 // @Security		ApiHeaderAuth
 func TasksRetrieve(c echo.Context) error {
 	ctx := c.Request().Context()
@@ -101,6 +108,8 @@ func TasksRetrieve(c echo.Context) error {
 // @Param			id				path		integer			true	"Task identifier"
 // @Param			request			body		models.Task		true	"Request body"
 // @Success			200				{object}	models.Task
+// @Failure			400				{object}	schemas.Error					true	"Validation error"
+// @Failure			500				{object}	schemas.Error					true	"Server error"
 // @Security		ApiHeaderAuth
 func TasksUpdate(c echo.Context) error {
 	ctx := c.Request().Context()
@@ -118,6 +127,8 @@ func TasksUpdate(c echo.Context) error {
 	}
 	if err = c.Bind(&task); err != nil {
 		return fmt.Errorf("tasks update error bind: %v", err)
+	} else if err := c.Validate(&task); err != nil {
+		return err
 	}
 	if _, err := models.DB.NewUpdate().Model(&task).WherePK().Exec(ctx); err != nil {
 		return fmt.Errorf("tasks update error: %v", err)
@@ -135,6 +146,8 @@ func TasksUpdate(c echo.Context) error {
 // @Produce			json
 // @Param			id				path		integer			true	"Task identifier"
 // @Success			204
+// @Failure			404
+// @Failure			500				{object}	schemas.Error					true	"Server error"
 // @Security		ApiHeaderAuth
 func TasksDelete(c echo.Context) error {
 	ctx := c.Request().Context()

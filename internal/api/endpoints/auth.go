@@ -27,13 +27,15 @@ import (
 // @Produce 		json
 // @Param			request						body		schemas.AuthRegistrationRequest	true	"Request body"
 // @Success			201
-// @Failure			400
-// @Failure			500
+// @Failure			400							{object}	schemas.Error					true	"Validation error"
+// @Failure			500							{object}	schemas.Error					true	"Server error"
 func AuthRegistration(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := schemas.AuthRegistrationRequest{}
 	if err := c.Bind(&req); err != nil {
 		return fmt.Errorf("auth registration error: %v", err)
+	} else if err := c.Validate(&req); err != nil {
+		return err
 	}
 	user := models.User{
 		Email:  req.Email,
@@ -75,13 +77,15 @@ func AuthRegistration(c echo.Context) error {
 // @Produce			json
 // @Param			request						body		schemas.AuthConfirmation		true	"Request body"
 // @Success			204
-// @Failure			400
-// @Failure			500
+// @Failure			400							{object}	schemas.Error					true	"Validation error"
+// @Failure			500							{object}	schemas.Error					true	"Server error"
 func AuthConfirmation(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := schemas.AuthConfirmation{}
 	if err := c.Bind(&req); err != nil {
 		return fmt.Errorf("auth confirmation error: %v", err)
+	} else if err := c.Validate(&req); err != nil {
+		return err
 	}
 	confirmation := models.Confirmation{}
 	query := models.DB.NewSelect().Model(&confirmation).Relation("User").Where("token = ?", req.Token)
@@ -122,11 +126,15 @@ func AuthConfirmation(c echo.Context) error {
 // @Produce			json
 // @Param			request						body		schemas.AuthLoginRequest	true	"Request data"
 // @Success			200							{object}	schemas.AuthLoginResponse
+// @Failure			400							{object}	schemas.Error					true	"Validation error"
+// @Failure			500							{object}	schemas.Error					true	"Server error"
 func AuthLogin(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := schemas.AuthLoginRequest{}
 	if err := c.Bind(&req); err != nil {
 		return fmt.Errorf("auth login error: %v", err)
+	} else if err := c.Validate(&req); err != nil {
+		return err
 	}
 	user := models.User{}
 	query := models.DB.NewSelect().Model(&user).
@@ -160,13 +168,15 @@ func AuthLogin(c echo.Context) error {
 // @Produce			json
 // @Param			request						body		schemas.AuthRefreshRequest	true	"Request data"
 // @Success			200							{object}	schemas.AuthRefreshResponse
-// @Failure			400
-// @Failure			500
+// @Failure			400							{object}	schemas.Error					true	"Validation error"
+// @Failure			500							{object}	schemas.Error					true	"Server error"
 func AuthRefresh(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := schemas.AuthRefreshRequest{}
 	if err := c.Bind(&req); err != nil {
 		return fmt.Errorf("auth refresh error: %v", err)
+	} else if err := c.Validate(&req); err != nil {
+		return err
 	}
 	refreshTokenParsed, err := jwt.ParseWithClaims(req.RefreshToken, helpers.JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(config.Config.Secret), nil
