@@ -1,8 +1,5 @@
-import {useAxios} from "@vueuse/integrations/useAxios";
 import baseAxios from "@/apis/base";
 
-export default function (id: Number) {
-    // @todo fix data params for ts
-    // @ts-ignore
-    return useAxios(`/tasks/${id}/`, {method: 'DELETE'}, baseAxios)
+export default async function (id: Number) {
+  return await baseAxios.delete(`/tasks/${id}/`)
 }

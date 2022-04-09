@@ -1,12 +1,9 @@
-import {useAxios} from "@vueuse/integrations/useAxios";
 import baseAxios from "@/apis/base";
 
 export interface AuthConfirmationRequest {
-    token: String
+  token: String
 }
 
-export default function (data: AuthConfirmationRequest) {
-    // @todo fix data params for ts
-    // @ts-ignore
-    return useAxios('/auth/confirmation/', {method: 'POST', data}, baseAxios)
+export default async function (data: AuthConfirmationRequest) {
+  return await baseAxios.post('/auth/confirmation/', data)
 }
