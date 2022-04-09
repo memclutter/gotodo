@@ -1,3 +1,7 @@
 export default function (response) {
-    return response
+  console.log('apis interceptors response fulfilled', response)
+  return {
+    success: true,
+    data: response.data
+  }
 }

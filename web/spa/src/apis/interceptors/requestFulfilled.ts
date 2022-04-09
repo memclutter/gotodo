@@ -1,3 +1,4 @@
 export default function (request) {
-    return request
+  console.log('apis interceptors request fulfilled', request)
+  return request
 }

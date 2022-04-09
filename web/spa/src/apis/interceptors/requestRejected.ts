@@ -1,3 +1,4 @@
 export default function (error) {
-    return Promise.reject(error)
+  console.log('apis interceptors request rejected', error)
+  return Promise.reject(error)
 }

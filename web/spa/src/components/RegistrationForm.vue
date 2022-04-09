@@ -29,11 +29,15 @@ const rules = reactive({
 const submit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formLoading.value = true
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async(valid, fields) => {
     if (valid) {
-      authRegistration(form)
-      ElMessage('Registration success, please check email address')
-      formEl.resetFields()
+      const {success, validationErrors} = await authRegistration(form)
+      if (success) {
+        ElMessage('Registration success, please check email address')
+        formEl.resetFields()
+      } else if (validationErrors) {
+        // @TODO set validation errors in form
+      }
     } else {
       console.log('error', fields)
     }
