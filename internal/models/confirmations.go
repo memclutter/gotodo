@@ -16,3 +16,7 @@ type Confirmation struct {
 
 	User User `bun:"rel:belongs-to,join:user_id=id" json:"user"`
 }
+
+func (c Confirmation) IsExpired() bool {
+	return c.DateExpired.Before(time.Now().UTC())
+}

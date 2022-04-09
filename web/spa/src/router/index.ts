@@ -21,7 +21,7 @@ const router = createRouter({
       component: () => import('@/views/RegistrationView.vue')
     },
     {
-      path: '/confirmation',
+      path: '/confirmation/:token',
       name: 'confirmation',
       component: () => import('@/views/ConfirmationView.vue')
     }

@@ -11,10 +11,10 @@ import (
 	"github.com/memclutter/gotodo/internal/config"
 	"github.com/memclutter/gotodo/internal/models"
 	"github.com/memclutter/gotodo/internal/security"
+	"github.com/sirupsen/logrus"
 	"github.com/uptrace/bun"
 	"net/http"
 	"strings"
-	"time"
 )
 
 // AuthRegistration godoc
@@ -87,14 +87,17 @@ func AuthConfirmation(c echo.Context) error {
 	} else if err := c.Validate(&req); err != nil {
 		return err
 	}
+	logCtx := logrus.WithField("token", req.Token)
 	confirmation := models.Confirmation{}
 	query := models.DB.NewSelect().Model(&confirmation).Relation("User").Where("token = ?", req.Token)
 	if err := query.Scan(ctx); err == sql.ErrNoRows {
+		logCtx.Info("not found token in db")
 		return c.NoContent(http.StatusBadRequest)
 	} else if err != nil {
 		return fmt.Errorf("auth confimration error: %v", err)
 	}
-	if confirmation.DateExpired.After(time.Now().UTC()) {
+	if confirmation.IsExpired() {
+		logCtx.WithField("dateExpired", confirmation.DateExpired).Info("date expired")
 		if _, err := models.DB.NewDelete().Model(&confirmation).WherePK().Exec(ctx); err != nil {
 			return fmt.Errorf("auth confirmation error: %v", err)
 		}

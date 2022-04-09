@@ -3,7 +3,6 @@ import {reactive, ref} from "vue";
 import authRegistration from '@/apis/endpoints/auth/registration'
 import type {FormInstance} from "element-plus";
 import {ElMessage} from "element-plus";
-import 'element-plus/es/components/message/style/css'
 
 const formLoading = ref(false)
 const formRef = ref<FormInstance>()

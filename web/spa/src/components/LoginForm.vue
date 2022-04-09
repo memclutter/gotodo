@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {reactive, ref} from "vue";
 import type {FormInstance} from "element-plus";
-import authRegistration from "@/apis/endpoints/auth/registration";
+import authLogin from "@/apis/endpoints/auth/login";
 
 const formLoading = ref(false)
 const formRef = ref<FormInstance>()
@@ -25,7 +25,7 @@ const submit = async (formEl: ref<FormInstance> | undefined) => {
   formLoading.value = true;
   await formEl.validate((valid, fields) => {
     if (valid) {
-      const {data, isFinished} = authRegistration(form)
+      const {data, isFinished} = authLogin(form)
       console.log(data)
     } else {
       console.log('error', fields)
