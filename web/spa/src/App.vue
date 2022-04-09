@@ -1,7 +1,6 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {RouterView} from 'vue-router'
-import Navigation from "@/components/Navigation.vue"
-</script>
+import Navigation from "@/components/Navigation.vue"</script>
 
 <template>
   <el-container>

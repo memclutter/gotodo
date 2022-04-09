@@ -1,18 +1,18 @@
 <template>
   <el-menu
-    router
     mode="horizontal"
+    router
   >
     <el-menu-item>
       GoTODO
     </el-menu-item>
-    <el-menu-item :index="menuItem.to" :key="index" v-for="(menuItem, index) in menuItems">
-      {{menuItem.title}}
+    <el-menu-item v-for="(menuItem, index) in menuItems" :key="index" :index="menuItem.to">
+      {{ menuItem.title }}
     </el-menu-item>
   </el-menu>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import {reactive} from "vue";
 
 const menuItems = reactive([

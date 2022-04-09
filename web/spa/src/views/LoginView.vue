@@ -1,13 +1,12 @@
 <template>
-  <el-row justify="center" align="center">
+  <el-row align="center" justify="center">
     <el-col :sm="8">
       <el-card shadow="never">
-        <LoginForm />
+        <LoginForm/>
       </el-card>
     </el-col>
   </el-row>
 </template>
 
-<script setup lang="ts">
-import LoginForm from "@/components/LoginForm.vue"
-</script>
+<script lang="ts" setup>
+import LoginForm from "@/components/LoginForm.vue"</script>
