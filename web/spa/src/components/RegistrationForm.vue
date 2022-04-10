@@ -11,6 +11,10 @@ const form = reactive({
   password: '',
   repeatPassword: ''
 })
+const serverErrors = reactive({
+  email: null,
+  password: null
+})
 
 const rules = reactive({
   email: [
@@ -35,7 +39,11 @@ const submit = async (formEl: FormInstance | undefined) => {
         ElMessage('Registration success, please check email address')
         formEl.resetFields()
       } else if (validationErrors) {
-        // @TODO set validation errors in form
+        for (const key in validationErrors) {
+          if (serverErrors.hasOwnProperty(key)) {
+            serverErrors[key] = validationErrors[key].join(' ')
+          }
+        }
       }
     } else {
       console.log('error', fields)
@@ -54,10 +62,10 @@ const submit = async (formEl: FormInstance | undefined) => {
     label-width="120px"
     @submit.prevent.stop="submit(formRef)"
   >
-    <el-form-item label="Email" prop="email">
+    <el-form-item label="Email" prop="email" :error="serverErrors.email">
       <el-input v-model="form.email" type="email"/>
     </el-form-item>
-    <el-form-item label="Password" prop="password">
+    <el-form-item label="Password" prop="password" :error="serverErrors.password">
       <el-input v-model="form.password" type="password"/>
     </el-form-item>
     <el-form-item label="Repeat password" prop="repeatPassword">

@@ -2,6 +2,8 @@ package plugins
 
 import (
 	"github.com/go-playground/validator/v10"
+	"github.com/memclutter/gotodo/internal/validators"
+	"github.com/sirupsen/logrus"
 	"reflect"
 )
 
@@ -14,6 +16,16 @@ func NewValidator() *Validator {
 	goPlaygroundValidate.RegisterTagNameFunc(func(field reflect.StructField) string {
 		return field.Tag.Get("json")
 	})
+
+	customValidators := map[string]validator.FuncCtx{
+		"user_email_exists": validators.UserEmailExists,
+	}
+	for tag, fun := range customValidators {
+		if err := goPlaygroundValidate.RegisterValidationCtx(tag, fun); err != nil {
+			logrus.Errorf("register validation ctx error: %v", err)
+		}
+	}
+
 	return &Validator{
 		goPlaygroundValidate: goPlaygroundValidate,
 	}
