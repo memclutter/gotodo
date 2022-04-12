@@ -6,6 +6,12 @@ export interface Error {
   validationErrors?: any
 }
 
+const validationErrorCodes = {
+  'REQUIRED': 'Field is required',
+  'EMAIL': 'Invalid email address',
+  'USER_EMAIL_EXISTS': 'This email address already use',
+}
+
 export default function (error) {
   console.log('apis interceptors response rejected', error)
   try {
@@ -25,6 +31,12 @@ export default function (error) {
         message: `Network error: ${error.toString()}`,
         type: 'error'
       })
+    } else if (status === 400) {
+      for (const field in data.validationErrors) {
+        if (Array.isArray(data.validationErrors[field])) {
+          data.validationErrors[field] = data.validationErrors[field].map(code => validationErrorCodes[code] || code)
+        }
+      }
     }
 
     return {
