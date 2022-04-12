@@ -8,6 +8,9 @@ import (
 
 func After(c *cli.Context) error {
 	defer func() {
+		if models.DB == nil {
+			return
+		}
 		if err := models.DB.Close(); err != nil {
 			logrus.Errorf("db close error: %v", err)
 		}

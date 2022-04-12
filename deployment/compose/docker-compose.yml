@@ -44,7 +44,7 @@ services:
       - ingress
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.spa.rule=Host(`localhost`)"
+      - "traefik.http.routers.spa.rule=Host(`${DOMAIN}`)"
   api:
     image: 'github.com/memclutter/gotodo/api'
     build:
@@ -57,9 +57,12 @@ services:
       - backend
     environment:
       DSN_DB: 'postgresql://go_todo:go_todo@db:5432/go_todo?sslmode=disable'
+      DSN_MAIL: '${DSN_MAIL}'
+      DEFAULT_FROM_MAIL: '${DEFAULT_FROM_MAIL}'
+      URL_BASE: 'http://${DOMAIN}'
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
       - "traefik.http.routers.api.middlewares=stripprefix-api@docker"
     command: "api"
   db-migrate:

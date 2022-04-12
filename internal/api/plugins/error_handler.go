@@ -4,12 +4,16 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/memclutter/gotodo/internal/api/schemas"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
 )
 
 func NewErrorHandler(e *echo.Echo) echo.HTTPErrorHandler {
 	return func(err error, c echo.Context) {
+
+		// Logging
+		logrus.WithField("err", err).Errorf("server error")
 
 		if c.Response().Committed {
 			return

@@ -13,6 +13,7 @@ import (
 	"github.com/memclutter/gotodo/internal/security"
 	"github.com/sirupsen/logrus"
 	"github.com/uptrace/bun"
+	"gopkg.in/gomail.v2"
 	"net/http"
 	"strings"
 )
@@ -52,17 +53,18 @@ func AuthRegistration(c echo.Context) error {
 		return fmt.Errorf("auth registration error: %v", err)
 	}
 
-	//confirmationLink := strings.Join([]string{strings.TrimRight(config.Config.UrlBase, "/"), "auth", "confirmation", confirmation.Token}, "/")
-	//mailMsg := gomail.NewMessage()
-	//mailMsg.SetHeader("From", "robot@gotodo")
-	//mailMsg.SetHeader("To", user.Email)
-	//mailMsg.SetHeader("Subject", "Registration on gotodo")
-	//mailMsg.SetBody("text/html", fmt.Sprintf("<h1>Hello</h1><p>Your confirmation link <a href=\"%s\">%s</a>", confirmationLink, confirmationLink))
-	//
-	//mailDialer := gomail.NewDialer(config.Config.MailHost, config.Config.MailPort, config.Config.MailUsername, config.Config.MailPassword)
-	//if err := mailDialer.DialAndSend(mailMsg); err != nil {
-	//	return fmt.Errorf("auth registration error: %v", err)
-	//}
+	confirmationLink := strings.Join([]string{strings.TrimRight(config.Config.UrlBase, "/"), "confirmation", confirmation.Token}, "/") + "/"
+	mailMsg := gomail.NewMessage()
+	mailMsg.SetHeader("From", config.Config.DefaultFromMail)
+	mailMsg.SetHeader("To", user.Email)
+	mailMsg.SetHeader("Subject", "Registration on gotodo")
+	mailMsg.SetBody("text/html", fmt.Sprintf("<h1>Hello</h1><p>Your confirmation link <a href=\"%s\">%s</a>", confirmationLink, confirmationLink))
+
+	mailDialer := gomail.NewDialer(config.Config.MailHost, config.Config.MailPort, config.Config.MailUsername, config.Config.MailPassword)
+	mailDialer.SSL = config.Config.MailSSL
+	if err := mailDialer.DialAndSend(mailMsg); err != nil {
+		return fmt.Errorf("auth registration error: %v", err)
+	}
 
 	return c.NoContent(http.StatusCreated)
 }

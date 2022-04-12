@@ -8,7 +8,7 @@ EXPOSE 3000
 
 WORKDIR /var/app
 COPY package.json .
-COPY yarn.lock .
+COPY package-lock.json .
 RUN yarn install && yarn cache clean
 COPY . .
 RUN yarn build
