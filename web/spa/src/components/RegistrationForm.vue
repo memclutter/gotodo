@@ -32,21 +32,18 @@ const rules = reactive({
 const submit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formLoading.value = true
-  await formEl.validate(async (valid, fields) => {
-    if (valid) {
-      const {success, validationErrors} = await authRegistration(form)
-      if (success) {
-        ElMessage('Registration success, please check email address')
-        formEl.resetFields()
-      } else if (validationErrors) {
-        for (const key in validationErrors) {
-          if (serverErrors.hasOwnProperty(key)) {
-            serverErrors[key] = validationErrors[key].join(' ')
-          }
+  await formEl.validate(async (valid) => {
+    if (!valid) return
+    const {success, validationErrors} = await authRegistration(form)
+    if (success) {
+      ElMessage('Registration success, please check email address')
+      formEl.resetFields()
+    } else if (validationErrors) {
+      for (const key in validationErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          serverErrors[key] = validationErrors[key].join(' ')
         }
       }
-    } else {
-      console.log('error', fields)
     }
   })
   formLoading.value = false

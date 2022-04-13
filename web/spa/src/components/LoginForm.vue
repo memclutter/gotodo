@@ -1,13 +1,21 @@
 <script lang="ts" setup>
 import {reactive, ref} from "vue";
 import type {FormInstance} from "element-plus";
+import {useAuthStore} from "@/stores/auth";
 import authLogin from "@/apis/endpoints/auth/login";
+import {useRouter} from "vue-router";
 
+const router = useRouter()
+const authStore = useAuthStore()
 const formLoading = ref(false)
 const formRef = ref<FormInstance>()
 const form = reactive({
   email: '',
   password: ''
+})
+const serverErrors = reactive({
+  email: null,
+  password: null
 })
 
 const rules = reactive({
@@ -20,15 +28,22 @@ const rules = reactive({
   ]
 })
 
-const submit = async (formEl: ref<FormInstance> | undefined) => {
+const submit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formLoading.value = true;
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid) => {
     if (valid) {
-      const {data, isFinished} = authLogin(form)
-      console.log(data)
-    } else {
-      console.log('error', fields)
+      const {success, data, validationErrors} = await authLogin(form)
+      if (success) {
+        authStore.set(data)
+        await router.replace({name: 'home'})
+      } else if (validationErrors) {
+        for (const key in validationErrors) {
+          if (serverErrors.hasOwnProperty(key)) {
+            serverErrors[key] = validationErrors[key].join(' ')
+          }
+        }
+      }
     }
   })
   formLoading.value = false;
