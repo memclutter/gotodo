@@ -13,11 +13,11 @@ export type AuthState = {
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    accessToken: null,
-    refreshToken: null,
+    accessToken: '',
+    refreshToken: '',
     user: {
-      id: null,
-      email: null
+      id: 0,
+      email: ''
     }
   } as AuthState),
   getters: {
