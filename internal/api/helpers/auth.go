@@ -30,7 +30,7 @@ func CreateTokens(user models.User) (schemas.AuthBaseResponse, error) {
 	dateCreated := time.Now().UTC()
 	response.AccessToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, JwtClaims{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: dateCreated.Add(30 * 24 * time.Hour).Unix(),
+			ExpiresAt: dateCreated.Add(2 * time.Minute).Unix(),
 		},
 		ID:    user.ID,
 		Email: user.Email,
