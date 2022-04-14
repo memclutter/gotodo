@@ -1,15 +1,12 @@
 package middleware
 
 import (
-	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/memclutter/gotodo/internal/api/helpers"
 	"github.com/memclutter/gotodo/internal/config"
-	"github.com/memclutter/gotodo/internal/models"
 	"net/http"
-	"strings"
 )
 
 func NewAuth() echo.MiddlewareFunc {
@@ -23,7 +20,6 @@ func NewAuth() echo.MiddlewareFunc {
 
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return jwtMiddleware(func(c echo.Context) error {
-			ctx := c.Request().Context()
 			auth := c.Get("auth")
 			if auth == nil {
 				return c.JSON(http.StatusUnauthorized, "Missing authorization access token")
@@ -36,15 +32,8 @@ func NewAuth() echo.MiddlewareFunc {
 			if !ok {
 				return c.JSON(http.StatusUnauthorized, "Invalid authorization access token")
 			}
-			user := models.User{}
-			query := models.DB.NewSelect().Model(&user).
-				Where("id = ?", jwtClaims.ID).
-				Where("lower(email) = ?", strings.ToLower(jwtClaims.Email)).
-				Where("status = ?", models.UserStatusActive)
-			if err := query.Scan(ctx); err != nil {
-				return fmt.Errorf("middleware user error: %v", err)
-			}
-			c.Set("auth.user", user)
+			// Set only current user claims
+			c.Set("auth.jwtClaims", jwtClaims)
 			return next(c)
 		})
 	}

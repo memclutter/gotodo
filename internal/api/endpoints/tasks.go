@@ -23,11 +23,11 @@ import (
 // @Security		ApiHeaderAuth
 func TasksList(c echo.Context) (err error) {
 	ctx := c.Request().Context()
-	authUser := helpers.GetAuthUser(c)
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
 	totalCount := 0
 	tasks := make([]models.Task, 0)
 	query := models.DB.NewSelect().Model(&tasks).
-		Where("user_id = ?", authUser.ID).
+		Where("user_id = ?", authJwtClaims.ID).
 		OrderExpr("date_created")
 	if totalCount, err = query.ScanAndCount(ctx); err != nil {
 		return fmt.Errorf("tasks get error: %v", err)
@@ -53,14 +53,14 @@ func TasksList(c echo.Context) (err error) {
 // @Security		ApiHeaderAuth
 func TasksCreate(c echo.Context) (err error) {
 	ctx := c.Request().Context()
-	authUser := helpers.GetAuthUser(c)
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
 	task := models.Task{}
 	if err = c.Bind(&task); err != nil {
 		return fmt.Errorf("tasks create error bind: %v", err)
 	} else if err := c.Validate(&task); err != nil {
 		return err
 	}
-	task.UserID = authUser.ID
+	task.UserID = authJwtClaims.ID
 	if _, err = models.DB.NewInsert().Model(&task).Exec(ctx); err != nil {
 		return fmt.Errorf("tasks create error: %v", err)
 	}
@@ -82,7 +82,7 @@ func TasksCreate(c echo.Context) (err error) {
 // @Security		ApiHeaderAuth
 func TasksRetrieve(c echo.Context) error {
 	ctx := c.Request().Context()
-	authUser := helpers.GetAuthUser(c)
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, "task not found")
@@ -90,7 +90,7 @@ func TasksRetrieve(c echo.Context) error {
 	task := models.Task{ID: id}
 	query := models.DB.NewSelect().Model(&task).
 		Where("id = ?", task.ID).
-		Where("user_id = ?", authUser.ID)
+		Where("user_id = ?", authJwtClaims.ID)
 	if err := query.Scan(ctx); err != nil {
 		return fmt.Errorf("tasks retrieve error: %v", err)
 	}
@@ -113,7 +113,7 @@ func TasksRetrieve(c echo.Context) error {
 // @Security		ApiHeaderAuth
 func TasksUpdate(c echo.Context) error {
 	ctx := c.Request().Context()
-	authUser := helpers.GetAuthUser(c)
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, "task not found")
@@ -121,7 +121,7 @@ func TasksUpdate(c echo.Context) error {
 	task := models.Task{ID: id}
 	query := models.DB.NewSelect().Model(&task).
 		Where("id = ?", task.ID).
-		Where("user_id = ?", authUser.ID)
+		Where("user_id = ?", authJwtClaims.ID)
 	if err := query.Scan(ctx); err != nil {
 		return fmt.Errorf("tasks update error: %v", err)
 	}
@@ -151,7 +151,7 @@ func TasksUpdate(c echo.Context) error {
 // @Security		ApiHeaderAuth
 func TasksDelete(c echo.Context) error {
 	ctx := c.Request().Context()
-	authUser := helpers.GetAuthUser(c)
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, "task not found")
@@ -159,7 +159,7 @@ func TasksDelete(c echo.Context) error {
 	task := models.Task{ID: id}
 	query := models.DB.NewSelect().Model(&task).
 		Where("id = ?", task.ID).
-		Where("user_id = ?", authUser.ID)
+		Where("user_id = ?", authJwtClaims.ID)
 	if err := query.Scan(ctx); err != nil {
 		return fmt.Errorf("tasks delete error: %v", err)
 	} else if _, err := models.DB.NewDelete().Model(&task).WherePK().Exec(ctx); err != nil {
