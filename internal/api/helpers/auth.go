@@ -52,6 +52,7 @@ func CreateTokens(user models.User) (schemas.AuthBaseResponse, error) {
 	response.AccessToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, JwtClaims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: dateCreated.Add(2 * time.Minute).Unix(),
+			Audience:  "access",
 		},
 		ID:    user.ID,
 		Email: user.Email,
@@ -62,6 +63,7 @@ func CreateTokens(user models.User) (schemas.AuthBaseResponse, error) {
 	response.RefreshToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, JwtClaims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: dateCreated.Add(30 * 24 * time.Hour).Unix(),
+			Audience:  "refresh",
 		},
 		ID:    user.ID,
 		Email: user.Email,
