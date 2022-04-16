@@ -1,5 +1,5 @@
 import {ElMessage} from "element-plus";
-import type {AxiosResponse} from "axios";
+import type {AxiosError, AxiosResponse} from "axios";
 import authRefresh from '@/apis/endpoints/auth/refresh'
 import {useAuthStore} from "@/stores/auth";
 import baseAxios from "@/apis/base";
@@ -15,13 +15,13 @@ const validationErrorCodes = {
   'USER_EMAIL_EXISTS': 'This email address already use',
 }
 
-export default function (error) {
+export default function (error: AxiosError) {
   console.log('apis interceptors response rejected', error)
   try {
-    const response: AxiosResponse | object = error.response || {}
-    const status = response.status || 0;
-    const data: Error = response.data || new Error()
-    const message = data.message || response.statusText
+    const response: AxiosResponse | undefined = error.response
+    const status = response?.status || 0;
+    const data: Error = response?.data || new Error()
+    const message = data.message || response?.statusText
     const validationErrors = data.validationErrors || {}
 
     if (status >= 500) {
@@ -37,7 +37,7 @@ export default function (error) {
     } else if (status === 400) {
       for (const field in data.validationErrors) {
         if (Array.isArray(data.validationErrors[field])) {
-          data.validationErrors[field] = data.validationErrors[field].map(code => validationErrorCodes[code] || code)
+          data.validationErrors[field] = data.validationErrors[field].map((code: string) => validationErrorCodes[code] || code)
         }
       }
     } else if (status === 401) {
