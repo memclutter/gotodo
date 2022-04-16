@@ -3,7 +3,7 @@
     mode="horizontal"
     router
   >
-    <el-menu-item>
+    <el-menu-item index="/">
       GoTODO
     </el-menu-item>
     <el-menu-item v-for="(menuItem, index) in menuItems" :key="index" :index="menuItem.to">

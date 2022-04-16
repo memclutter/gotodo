@@ -1,5 +1,8 @@
 import {ElMessage} from "element-plus";
 import type {AxiosResponse} from "axios";
+import authRefresh from '@/apis/endpoints/auth/refresh'
+import {useAuthStore} from "@/stores/auth";
+import baseAxios from "@/apis/base";
 
 export interface Error {
   message?: String
@@ -36,6 +39,16 @@ export default function (error) {
         if (Array.isArray(data.validationErrors[field])) {
           data.validationErrors[field] = data.validationErrors[field].map(code => validationErrorCodes[code] || code)
         }
+      }
+    } else if (status === 401) {
+      const authStore = useAuthStore()
+      if (authStore.refreshToken) {
+        authRefresh({refreshToken: authStore.refreshToken}).then(({success, data}) => {
+          if (success) {
+            authStore.set(data)
+            return baseAxios.request(error.config)
+          }
+        })
       }
     }
 

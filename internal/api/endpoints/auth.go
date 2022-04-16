@@ -183,16 +183,18 @@ func AuthRefresh(c echo.Context) error {
 	} else if err := c.Validate(&req); err != nil {
 		return err
 	}
-	refreshTokenParsed, err := jwt.ParseWithClaims(req.RefreshToken, helpers.JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
+	refreshTokenParsed, err := jwt.ParseWithClaims(req.RefreshToken, &helpers.JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(config.Config.Secret), nil
 	})
 	if err != nil {
+		c.Logger().Errorf("invalid refresh token: %v", err)
 		return c.NoContent(http.StatusBadRequest)
 	} else if !refreshTokenParsed.Valid {
 		return c.NoContent(http.StatusBadRequest)
 	}
 	refreshTokenClaims, ok := refreshTokenParsed.Claims.(*helpers.JwtClaims)
 	if !ok {
+		logrus.Infof("invalid claims %T", refreshTokenParsed.Claims)
 		return c.NoContent(http.StatusBadRequest)
 	}
 	user := models.User{}
@@ -201,6 +203,7 @@ func AuthRefresh(c echo.Context) error {
 		Where("lower(email) = ?", strings.ToLower(refreshTokenClaims.Email)).
 		Where("status = ?", models.UserStatusActive)
 	if err := query.Scan(ctx); err == sql.ErrNoRows {
+		c.Logger().Errorf("not found user: %v", refreshTokenClaims)
 		return c.NoContent(http.StatusBadRequest)
 	} else if err != nil {
 		return fmt.Errorf("auth refresh error: %v", err)

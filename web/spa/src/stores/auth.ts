@@ -1,4 +1,7 @@
 import {defineStore} from "pinia";
+import Cookies from 'js-cookie';
+
+const persistRefreshToken = Cookies.get('auth.refreshToken')
 
 export type AuthStateUser = {
   id: Number
@@ -14,7 +17,7 @@ export type AuthState = {
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     accessToken: '',
-    refreshToken: '',
+    refreshToken: '' || persistRefreshToken,
     user: {
       id: 0,
       email: ''
@@ -37,6 +40,8 @@ export const useAuthStore = defineStore('auth', {
       this.refreshToken = state.refreshToken
       this.user.id = state.user.id
       this.user.email = state.user.email
+
+      Cookies.set('auth.refreshToken', state.refreshToken)
     }
   }
 })
