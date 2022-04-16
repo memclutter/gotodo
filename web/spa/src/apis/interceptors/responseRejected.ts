@@ -3,19 +3,20 @@ import type {AxiosError, AxiosResponse} from "axios";
 import authRefresh from '@/apis/endpoints/auth/refresh'
 import {useAuthStore} from "@/stores/auth";
 import baseAxios from "@/apis/base";
+import type {CustomAxiosResponse} from "@/apis/utils";
 
 export interface Error {
   message?: String
-  validationErrors?: any
+  validationErrors?: {[key: string]: string[]}
 }
 
-const validationErrorCodes = {
+const validationErrorCodes: {[key: string]: string} = {
   'REQUIRED': 'Field is required',
   'EMAIL': 'Invalid email address',
   'USER_EMAIL_EXISTS': 'This email address already use',
 }
 
-export default function (error: AxiosError) {
+export default function (error: AxiosError): Promise<CustomAxiosResponse> | CustomAxiosResponse {
   console.log('apis interceptors response rejected', error)
   try {
     const response: AxiosResponse | undefined = error.response
@@ -56,7 +57,7 @@ export default function (error: AxiosError) {
       success: false,
       message: message,
       validationErrors: validationErrors
-    }
+    } as CustomAxiosResponse
   } catch (e) {
     return Promise.reject(e)
   }

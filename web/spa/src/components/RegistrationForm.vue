@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import {reactive, ref} from "vue";
 import authRegistration from '@/apis/endpoints/auth/registration'
-import type {FormInstance} from "element-plus";
+import type {FormInstance, FormItemRule} from "element-plus";
 import {ElMessage} from "element-plus";
+import type {Arrayable} from "element-plus/es/utils";
 
 const formLoading = ref(false)
 const formRef = ref<FormInstance>()
@@ -11,12 +12,12 @@ const form = reactive({
   password: '',
   repeatPassword: ''
 })
-const serverErrors = reactive({
-  email: null,
-  password: null
+const serverErrors = reactive<{[key: string]: string | undefined}>({
+  email: undefined,
+  password: undefined
 })
 
-const rules = reactive({
+const rules: Partial<Record<string, Arrayable<FormItemRule>>> = reactive({
   email: [
     {required: true, message: 'Field is required', trigger: 'blur'},
     {type: 'email', message: 'Field is not correct email address', trigger: 'blur'}

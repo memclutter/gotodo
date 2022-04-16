@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import {reactive, ref} from "vue";
-import type {FormInstance} from "element-plus";
+import type {FormInstance, FormItemRule} from "element-plus";
 import {useAuthStore} from "@/stores/auth";
 import authLogin from "@/apis/endpoints/auth/login";
 import {useRouter} from "vue-router";
+import type {Arrayable} from "element-plus/es/utils";
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -13,12 +14,12 @@ const form = reactive({
   email: '',
   password: ''
 })
-const serverErrors = reactive({
-  email: null,
-  password: null
+const serverErrors = reactive<{ [key: string]: string | undefined }>({
+  email: undefined,
+  password: undefined
 })
 
-const rules = reactive({
+const rules: Partial<Record<string, Arrayable<FormItemRule>>> = reactive({
   email: [
     {required: true, message: 'Field is required', trigger: 'blur'},
     {type: 'email', message: 'Field is not correct email address', trigger: 'blur'}

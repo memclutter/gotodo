@@ -1,5 +1,6 @@
 import baseAxios from "@/apis/base";
+import type {CustomAxiosResponse} from "@/apis/utils";
 
-export default async function () {
+export default async function (): Promise<CustomAxiosResponse> {
   return await baseAxios.get('/tasks/')
 }

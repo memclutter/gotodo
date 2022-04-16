@@ -4,7 +4,10 @@ import {onMounted, ref} from "vue";
 
 const tasks = ref([])
 onMounted(async () => {
-  tasks.value = await tasksList()
+  const {success, data} = await tasksList()
+  if (success) {
+    tasks.value = data;
+  }
 })
 </script>
 <template>

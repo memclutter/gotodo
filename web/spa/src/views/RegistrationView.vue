@@ -1,5 +1,5 @@
 <template>
-  <el-row align="center" justify="center">
+  <el-row align="middle" justify="center">
     <el-col :span="8">
       <el-card shadow="never">
         <RegistrationForm/>
