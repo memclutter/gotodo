@@ -5,6 +5,15 @@ export interface AuthRefreshRequest {
   refreshToken: String
 }
 
-export default async function (data: AuthRefreshRequest): Promise<CustomAxiosResponse> {
+export interface AuthRefreshResponse {
+  accessToken: string,
+  refreshToken: string,
+  user: {
+    id: number,
+    email: string
+  }
+}
+
+export default async function (data: AuthRefreshRequest): Promise<CustomAxiosResponse<AuthRefreshResponse, AuthRefreshRequest>> {
   return await baseAxios.post('/auth/refresh/', data)
 }
