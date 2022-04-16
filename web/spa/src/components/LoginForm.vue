@@ -58,15 +58,16 @@ const submit = async (formEl: FormInstance | undefined) => {
     :model="form"
     :rules="rules"
     label-width="120px"
+    @submit.prevent.stop="submit(formRef)"
   >
-    <el-form-item label="Email" prop="email">
+    <el-form-item label="Email" prop="email" :error="serverErrors.email">
       <el-input v-model="form.email" type="email"/>
     </el-form-item>
-    <el-form-item label="Password" prop="password">
+    <el-form-item label="Password" prop="password" :error="serverErrors.password">
       <el-input v-model="form.password" type="password"/>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submit(formRef)">Login</el-button>
+      <el-button type="primary" native-type="submit">Login</el-button>
     </el-form-item>
   </el-form>
 </template>

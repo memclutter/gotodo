@@ -1,6 +1,6 @@
 <template>
   <el-row align="middle" justify="center">
-    <el-col :span="8">
+    <el-col :sm="8">
       <el-card shadow="never">
         <RegistrationForm/>
       </el-card>
