@@ -2,6 +2,7 @@
 import tasksList from '@/apis/endpoints/tasks/list'
 import {onMounted, ref} from "vue";
 import type {Task} from '@/models/tasks'
+import TaskForm from "@/components/TaskForm.vue";
 
 const tasks = ref<Task[]>([])
 onMounted(async () => {
@@ -12,5 +13,5 @@ onMounted(async () => {
 })
 </script>
 <template>
-  Home
+  <task-form />
 </template>
