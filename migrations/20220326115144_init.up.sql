@@ -1,11 +1,14 @@
+CREATE TYPE task_status AS ENUM ('todo', 'inProgress', 'closed');
+CREATE TYPE user_status AS ENUM ('pending', 'active', 'block');
+
 CREATE TABLE IF NOT EXISTS tasks
 (
     id           BIGSERIAL,
     user_id      BIGINT NOT NULL,
     title        TEXT,
     description  TEXT,
-    date_created TIMESTAMP DEFAULT NOW(),
-    status       SMALLINT,
+    date_created TIMESTAMP   DEFAULT NOW(),
+    status       task_status DEFAULT 'todo',
     PRIMARY KEY (id)
 );
 
@@ -14,7 +17,7 @@ CREATE TABLE IF NOT EXISTS users
     id      BIGSERIAL,
     email   VARCHAR(500) NOT NULL,
     pw_hash VARCHAR(500) NOT NULL,
-    status  SMALLINT DEFAULT 0,
+    status  user_status DEFAULT 'pending',
     PRIMARY KEY (id)
 );
 

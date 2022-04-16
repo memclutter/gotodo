@@ -48,6 +48,10 @@ export default function (error: AxiosError): Promise<CustomAxiosResponse> | Cust
           if (success) {
             authStore.set(data)
             return baseAxios.request(error.config)
+          } else {
+            // Clear auth store
+            authStore.unset()
+            return {success: false, message: 'Unauthorized'} as CustomAxiosResponse
           }
         })
       }

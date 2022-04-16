@@ -13,7 +13,7 @@ type Task struct {
 	Title       string    `json:"title" validate:"required"`
 	Description string    `json:"description"`
 	DateCreated time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"dateCreated"`
-	Status      int       `json:"status"`
+	Status      string    `bun:",type:task_status" json:"status"`
 
 	User User `bun:"rel:belongs-to,join:user_id=id" json:"user"`
 }

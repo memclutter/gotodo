@@ -11,11 +11,11 @@ type User struct {
 	Email    string `json:"email"`
 	PwHash   string `json:"-"`
 	Password string `bun:"-" json:"password,omitempty"`
-	Status   int    `json:"status"`
+	Status   string `bun:",type:user_status" json:"status"`
 }
 
 const (
-	UserStatusPending = iota
-	UserStatusActive
-	UserStatusBlock
+	UserStatusPending = "pending"
+	UserStatusActive  = "active"
+	UserStatusBlock   = "block"
 )

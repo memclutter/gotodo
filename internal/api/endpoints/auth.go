@@ -41,6 +41,7 @@ func AuthRegistration(c echo.Context) error {
 	user := models.User{
 		Email:  req.Email,
 		PwHash: security.PasswordMustGenerate(req.Password),
+		Status: models.UserStatusPending,
 	}
 	if _, err := models.DB.NewInsert().Model(&user).Exec(ctx); err != nil {
 		return fmt.Errorf("auth registration error: %v", err)
