@@ -56,7 +56,7 @@ func TasksCreate(c echo.Context) (err error) {
 	authJwtClaims := helpers.GetAuthJwtClaims(c)
 	task := models.Task{}
 	if err = c.Bind(&task); err != nil {
-		return fmt.Errorf("tasks create error bind: %v", err)
+		return err
 	} else if err := c.Validate(&task); err != nil {
 		return err
 	}
@@ -126,7 +126,7 @@ func TasksUpdate(c echo.Context) error {
 		return fmt.Errorf("tasks update error: %v", err)
 	}
 	if err = c.Bind(&task); err != nil {
-		return fmt.Errorf("tasks update error bind: %v", err)
+		return err
 	} else if err := c.Validate(&task); err != nil {
 		return err
 	}

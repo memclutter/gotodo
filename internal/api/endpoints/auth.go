@@ -34,7 +34,7 @@ func AuthRegistration(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := schemas.AuthRegistrationRequest{}
 	if err := c.Bind(&req); err != nil {
-		return fmt.Errorf("auth registration error: %v", err)
+		return err
 	} else if err := c.Validate(&req); err != nil {
 		return err
 	}
@@ -86,7 +86,7 @@ func AuthConfirmation(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := schemas.AuthConfirmation{}
 	if err := c.Bind(&req); err != nil {
-		return fmt.Errorf("auth confirmation error: %v", err)
+		return err
 	} else if err := c.Validate(&req); err != nil {
 		return err
 	}
@@ -138,7 +138,7 @@ func AuthLogin(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := schemas.AuthLoginRequest{}
 	if err := c.Bind(&req); err != nil {
-		return fmt.Errorf("auth login error: %v", err)
+		return err
 	} else if err := c.Validate(&req); err != nil {
 		return err
 	}
@@ -180,7 +180,7 @@ func AuthRefresh(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := schemas.AuthRefreshRequest{}
 	if err := c.Bind(&req); err != nil {
-		return fmt.Errorf("auth refresh error: %v", err)
+		return err
 	} else if err := c.Validate(&req); err != nil {
 		return err
 	}

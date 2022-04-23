@@ -1,6 +1,7 @@
 package plugins
 
 import (
+	"encoding/json"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/memclutter/gotodo/internal/api/schemas"
@@ -65,6 +66,16 @@ func NewErrorHandler(e *echo.Echo) echo.HTTPErrorHandler {
 				code = http.StatusBadRequest
 				ce.Message = nil
 				ce.ValidationErrors = errors
+			}
+		}
+
+		// Process unmarhsal error and convert as validation error
+		if code == http.StatusBadRequest && he.Internal != nil {
+			if ve, ok := he.Internal.(*json.UnmarshalTypeError); ok {
+				ce.Message = nil
+				ce.ValidationErrors = map[string][]string{
+					ve.Field: {"INVALID_TYPE"},
+				}
 			}
 		}
 
