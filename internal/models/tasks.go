@@ -13,7 +13,19 @@ type Task struct {
 	Title       string    `json:"title" validate:"required"`
 	Description string    `json:"description"`
 	DateCreated time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"dateCreated"`
-	Status      string    `bun:",type:task_status" json:"status"`
+	Status      string    `bun:",type:task_status" json:"status" validate:"required,task_status"`
 
 	User User `bun:"rel:belongs-to,join:user_id=id" json:"user"`
+}
+
+const (
+	TaskStatusTodo       = "todo"
+	TaskStatusInProgress = "inProgress"
+	TaskStatusClosed     = "closed"
+)
+
+var TaskStatuses = []string{
+	TaskStatusTodo,
+	TaskStatusInProgress,
+	TaskStatusClosed,
 }

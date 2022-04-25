@@ -19,6 +19,7 @@ func NewValidator() *Validator {
 
 	customValidators := map[string]validator.FuncCtx{
 		"user_email_exists": validators.UserEmailExists,
+		"task_status":       validators.TaskStatus,
 	}
 	for tag, fun := range customValidators {
 		if err := goPlaygroundValidate.RegisterValidationCtx(tag, fun); err != nil {

@@ -64,6 +64,11 @@ func TasksCreate(c echo.Context) (err error) {
 	if _, err = models.DB.NewInsert().Model(&task).Exec(ctx); err != nil {
 		return fmt.Errorf("tasks create error: %v", err)
 	}
+	// Fill user data
+	task.User = models.User{
+		ID:    authJwtClaims.ID,
+		Email: authJwtClaims.Email,
+	}
 	return c.JSON(http.StatusCreated, task)
 }
 
