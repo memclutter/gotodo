@@ -11,7 +11,7 @@ const formRef = ref<FormInstance>()
 const form = reactive({
   title: '',
   description: '',
-  status: 0
+  status: ''
 })
 const serverErrors = reactive<{ [key: string]: string | undefined }>({
   title: undefined,

@@ -3,6 +3,7 @@ import tasksList from '@/apis/endpoints/tasks/list'
 import {onMounted, ref} from "vue";
 import type {Task} from '@/models/tasks'
 import TaskForm from "@/components/TaskForm.vue";
+import TaskBoard from "@/components/TaskBoard.vue";
 
 const tasks = ref<Task[]>([])
 onMounted(async () => {
@@ -14,4 +15,5 @@ onMounted(async () => {
 </script>
 <template>
   <task-form />
+  <task-board :items="tasks" />
 </template>

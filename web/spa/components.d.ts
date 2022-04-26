@@ -20,7 +20,10 @@ declare module 'vue' {
     LoginForm: typeof import('./src/components/LoginForm.vue')['default']
     Navigation: typeof import('./src/components/Navigation.vue')['default']
     RegistrationForm: typeof import('./src/components/RegistrationForm.vue')['default']
+    TaskBoard: typeof import('./src/components/TaskBoard.vue')['default']
+    TaskCard: typeof import('./src/components/TaskCard.vue')['default']
     TaskForm: typeof import('./src/components/TaskForm.vue')['default']
+    TaskList: typeof import('./src/components/TaskList.vue')['default']
   }
 }
 
