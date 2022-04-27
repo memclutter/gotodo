@@ -23,6 +23,9 @@ const serverErrors = reactive<{ [key: string]: string | undefined }>({
 const rules: Partial<Record<string, Arrayable<FormItemRule>>> = reactive({
   title: [
     {required: true, message: 'Field is required', trigger: 'blur'},
+  ],
+  status: [
+    {required: true, message: 'Field is required', trigger: 'blur'}
   ]
 })
 
@@ -59,7 +62,7 @@ const submit = async (formEl: FormInstance | undefined) => {
     <el-form-item label="Title" prop="title" :error="serverErrors.title">
       <el-input v-model="form.title" type="text"/>
     </el-form-item>
-    <el-form-item lang="Status" propp="status" :error="serverErrors.status">
+    <el-form-item label="Status" prop="status" :error="serverErrors.status">
       <task-status-select v-model="form.status" />
     </el-form-item>
     <el-form-item>
