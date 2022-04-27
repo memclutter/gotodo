@@ -1,19 +1,20 @@
 <script lang="ts" setup>
 import tasksList from '@/apis/endpoints/tasks/list'
-import {onMounted, ref} from "vue";
-import type {Task} from '@/models/tasks'
+import {onMounted} from "vue";
 import TaskForm from "@/components/TaskForm.vue";
 import TaskBoard from "@/components/TaskBoard.vue";
+import {useTasksStore} from "@/stores/tasks";
 
-const tasks = ref<Task[]>([])
+const tasksStore = useTasksStore()
+
 onMounted(async () => {
   const {success, data} = await tasksList()
   if (success) {
-    tasks.value = data.items;
+    tasksStore.set(data)
   }
 })
 </script>
 <template>
-  <task-form />
-  <task-board :items="tasks" />
+  <task-form/>
+  <task-board :items="tasksStore.items"/>
 </template>
