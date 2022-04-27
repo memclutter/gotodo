@@ -65,6 +65,9 @@ const submit = async (formEl: FormInstance | undefined) => {
     <el-form-item label="Status" prop="status" :error="serverErrors.status">
       <task-status-select v-model="form.status" />
     </el-form-item>
+    <el-form-item label="Description" prop="description" :error="serverErrors.description">
+      <el-input v-model="form.description" type="textarea" />
+    </el-form-item>
     <el-form-item>
       <el-button type="primary" native-type="submit">Submit</el-button>
     </el-form-item>
