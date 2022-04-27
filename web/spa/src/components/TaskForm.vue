@@ -4,6 +4,7 @@ import type {FormInstance, FormItemRule} from "element-plus";
 import tasksCreate from "@/apis/endpoints/tasks/create";
 import {useRouter} from "vue-router";
 import type {Arrayable} from "element-plus/es/utils";
+import TaskStatusSelect from "@/components/TaskStatusSelect.vue";
 
 const router = useRouter()
 const formLoading = ref(false)
@@ -57,6 +58,9 @@ const submit = async (formEl: FormInstance | undefined) => {
   >
     <el-form-item label="Title" prop="title" :error="serverErrors.title">
       <el-input v-model="form.title" type="text"/>
+    </el-form-item>
+    <el-form-item lang="Status" propp="status" :error="serverErrors.status">
+      <task-status-select v-model="form.status" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" native-type="submit">Submit</el-button>

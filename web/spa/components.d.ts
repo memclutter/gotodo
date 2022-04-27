@@ -15,7 +15,9 @@ declare module 'vue' {
     ElMain: typeof import('element-plus/es')['ElMain']
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
+    ElOption: typeof import('element-plus/es')['ElOption']
     ElRow: typeof import('element-plus/es')['ElRow']
+    ElSelect: typeof import('element-plus/es')['ElSelect']
     Loading: typeof import('element-plus/es')['ElLoadingDirective']
     LoginForm: typeof import('./src/components/LoginForm.vue')['default']
     Navigation: typeof import('./src/components/Navigation.vue')['default']
@@ -24,6 +26,7 @@ declare module 'vue' {
     TaskCard: typeof import('./src/components/TaskCard.vue')['default']
     TaskForm: typeof import('./src/components/TaskForm.vue')['default']
     TaskList: typeof import('./src/components/TaskList.vue')['default']
+    TaskStatusSelect: typeof import('./src/components/TaskStatusSelect.vue')['default']
   }
 }
 
