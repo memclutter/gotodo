@@ -20,6 +20,8 @@ const serverErrors = reactive<{ [key: string]: string | undefined }>({
   status: undefined
 })
 
+const emits = defineEmits(['success'])
+
 const rules: Partial<Record<string, Arrayable<FormItemRule>>> = reactive({
   title: [
     {required: true, message: 'Field is required', trigger: 'blur'},
@@ -34,9 +36,10 @@ const submit = async (formEl: FormInstance | undefined) => {
   formLoading.value = true;
   await formEl.validate(async (valid) => {
     if (valid) {
-      const {success, validationErrors} = await tasksCreate(form)
+      const {success, validationErrors, data} = await tasksCreate(form)
       if (success) {
-        // @TODO handle success
+        emits('success', data)
+        formEl.resetFields()
       } else if (validationErrors) {
         for (const key in validationErrors) {
           if (serverErrors.hasOwnProperty(key)) {
