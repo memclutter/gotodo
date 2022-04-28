@@ -36,15 +36,15 @@ export default function (error: AxiosError): Promise<CustomAxiosResponse> | Cust
         type: 'error'
       })
     } else if (status === 400) {
-      for (const field in data.validationErrors) {
-        if (Array.isArray(data.validationErrors[field])) {
-          data.validationErrors[field] = data.validationErrors[field].map((code: string) => validationErrorCodes[code] || code)
+      for (const field in validationErrors) {
+        if (Array.isArray(validationErrors[field])) {
+          validationErrors[field] = validationErrors[field].map((code: string) => validationErrorCodes[code] || code)
         }
       }
     } else if (status === 401) {
       const authStore = useAuthStore()
       if (authStore.refreshToken) {
-        authRefresh({refreshToken: authStore.refreshToken}).then(({success, data}) => {
+        return authRefresh({refreshToken: authStore.refreshToken}).then(({success, data}) => {
           if (success) {
             authStore.set(data)
             return baseAxios.request(error.config)
