@@ -15,7 +15,8 @@
     "js-cookie": "^3.0.1",
     "pinia": "^2.0.13",
     "vue": "^3.2.31",
-    "vue-router": "^4.0.14"
+    "vue-router": "^4.0.14",
+    "vuedraggable": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "^16.11.26",
