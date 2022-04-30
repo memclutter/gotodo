@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import {statuses} from '@/models/tasks'
+import type {Task} from '@/models/tasks'
 import {computed} from "vue";
 import TaskCard from "@/components/TaskCard.vue";
+import tasksUpdate from "@/apis/endpoints/tasks/update";
 
 const props = defineProps({
   items: Array
@@ -11,17 +13,31 @@ const boardSpan = computed(() => {
   return 24 / statuses.length;
 })
 
-const itemsByStatus = {
-  'todo': [
-    {id: 1, title: 'Task [todo]', status: 'todo'},
-    {id: 3, title: 'Task 2 [todo]', status: 'todo'}
-  ],
-  'inProgress': [
+interface DraggableEvent {
+  added?: DraggableAddedEvent
+  moved?: DraggableMovedEvent
+}
 
-  ],
-  'closed': [
-    {id: 2, title: 'Task 3', status: 'closed'}
-  ]
+interface DraggableAddedEvent {
+  element: Task,
+  newIndex: number,
+}
+
+interface DraggableMovedEvent {
+  element: Task,
+  oldIndex: number,
+  newIndex: number,
+}
+
+const changeItems = async (e: DraggableEvent, status) => {
+  if (e.added) {
+    const {element} = e.added;
+    element.status = status.value
+    await tasksUpdate(<number>element.id, element)
+  } else if (e.moved) {
+    const {element, oldIndex, newIndex} = e.moved;
+    console.log('moved', status, element, oldIndex, newIndex)
+  }
 }
 </script>
 
@@ -31,9 +47,11 @@ const itemsByStatus = {
       <h4>{{ status.title }}</h4>
 
       <vue-draggable
-        :list="itemsByStatus[status.value]"
-        :group="status.value"
+        :list="items.filter(item => item.status === status.value)"
+        group="tasks"
+        @change="changeItems($event, status)"
         item-key="id"
+        style="width: 100%; height: 100%"
       >
         <template #item="{element}">
           <task-card

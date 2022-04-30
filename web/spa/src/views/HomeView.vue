@@ -15,6 +15,6 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <task-form @success="tasksStore.append($event)"/>
   <task-board :items="tasksStore.items"/>
+  <task-form @success="tasksStore.append($event)"/>
 </template>
