@@ -20,14 +20,14 @@ declare module 'vue' {
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSelect: typeof import('element-plus/es')['ElSelect']
     Loading: typeof import('element-plus/es')['ElLoadingDirective']
-    LoginForm: typeof import('./src/components/LoginForm.vue')['default']
-    Navigation: typeof import('./src/components/Navigation.vue')['default']
-    RegistrationForm: typeof import('./src/components/RegistrationForm.vue')['default']
-    TaskBoard: typeof import('./src/components/TaskBoard.vue')['default']
-    TaskCard: typeof import('./src/components/TaskCard.vue')['default']
-    TaskForm: typeof import('./src/components/TaskForm.vue')['default']
-    TaskList: typeof import('./src/components/TaskList.vue')['default']
-    TaskStatusSelect: typeof import('./src/components/TaskStatusSelect.vue')['default']
+    LoginForm: typeof import('./components/LoginForm.vue')['default']
+    Navigation: typeof import('./components/Navigation.vue')['default']
+    RegistrationForm: typeof import('./components/RegistrationForm.vue')['default']
+    TaskBoard: typeof import('./components/TaskBoard.vue')['default']
+    TaskCard: typeof import('./components/TaskCard.vue')['default']
+    TaskForm: typeof import('./components/TaskForm.vue')['default']
+    TaskList: typeof import('./components/TaskList.vue')['default']
+    TaskStatusSelect: typeof import('./components/TaskStatusSelect.vue')['default']
   }
 }
 
