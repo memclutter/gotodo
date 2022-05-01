@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {Edit, Delete} from "@element-plus/icons-vue";
+import tasksDelete from "@/apis/endpoints/tasks/delete"
 
 const props = defineProps({
   id: Number,
@@ -7,6 +8,13 @@ const props = defineProps({
   description: String,
   status: String
 })
+
+const del = async () => {
+  const {success} = await tasksDelete(<number>props.id)
+  if (success) {
+    // @TODO update state
+  }
+}
 </script>
 
 <template>
@@ -22,7 +30,7 @@ const props = defineProps({
               <edit />
             </el-icon>
           </el-button>
-          <el-button>
+          <el-button @click="del">
             <el-icon>
               <delete/>
             </el-icon>
