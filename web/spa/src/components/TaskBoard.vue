@@ -4,10 +4,14 @@ import type {Task} from '@/models/tasks'
 import {computed} from "vue";
 import TaskCard from "@/components/TaskCard.vue";
 import tasksUpdate from "@/apis/endpoints/tasks/update";
+import {Plus} from "@element-plus/icons-vue";
+import {useTasksStore} from "@/stores/tasks";
 
 const props = defineProps({
   items: Array
 })
+
+const tasksStore = useTasksStore()
 
 const boardSpan = computed(() => {
   return 24 / statuses.length;
@@ -59,7 +63,15 @@ const changeItems = async (e: DraggableEvent, status) => {
             v-bind="element"
           />
         </template>
+        <template #footer>
+          <el-button @click="tasksStore.setCreateDialog(true)">
+            <el-icon>
+              <plus />
+            </el-icon>
+          </el-button>
+        </template>
       </vue-draggable>
+
     </el-col>
   </el-row>
 </template>

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import tasksList from '@/apis/endpoints/tasks/list'
 import {onMounted} from "vue";
-import TaskForm from "@/components/TaskForm.vue";
 import TaskBoard from "@/components/TaskBoard.vue";
 import {useTasksStore} from "@/stores/tasks";
 
@@ -16,5 +15,5 @@ onMounted(async () => {
 </script>
 <template>
   <task-board :items="tasksStore.items"/>
-  <task-form @success="tasksStore.append($event)"/>
+  <task-create-dialog />
 </template>
