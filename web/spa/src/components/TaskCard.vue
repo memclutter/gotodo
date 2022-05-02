@@ -23,7 +23,7 @@ const del = async () => {
 <template>
   <el-card>
     <template #header>
-      <el-row justify="space-between" align="center">
+      <el-row justify="space-between" align="middle">
         <el-col :span="18">
           {{title}}
         </el-col>
