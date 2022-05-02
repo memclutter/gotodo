@@ -18,6 +18,10 @@ export const useTasksStore = defineStore('tasks', {
     append(task: Task) {
       this.items.push(task)
       this.totalCount += 1
+    },
+    delete(id: number) {
+      this.items = this.items.filter(item => item.id !== id)
+      this.totalCount = this.items.length;
     }
   }
 })

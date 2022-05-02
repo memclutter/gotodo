@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {Edit, Delete} from "@element-plus/icons-vue";
 import tasksDelete from "@/apis/endpoints/tasks/delete"
+import {useTasksStore} from "@/stores/tasks";
 
 const props = defineProps({
   id: Number,
@@ -9,10 +10,12 @@ const props = defineProps({
   status: String
 })
 
+const tasksStore = useTasksStore()
+
 const del = async () => {
   const {success} = await tasksDelete(<number>props.id)
   if (success) {
-    // @TODO update state
+    tasksStore.delete(<number>props.id)
   }
 }
 </script>
