@@ -39,9 +39,11 @@ func AuthRegistration(c echo.Context) error {
 		return err
 	}
 	user := models.User{
-		Email:  req.Email,
-		PwHash: security.PasswordMustGenerate(req.Password),
-		Status: models.UserStatusPending,
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+		Email:     req.Email,
+		PwHash:    security.PasswordMustGenerate(req.Password),
+		Status:    models.UserStatusPending,
 	}
 	if _, err := models.DB.NewInsert().Model(&user).Exec(ctx); err != nil {
 		return fmt.Errorf("auth registration error: %v", err)
@@ -59,7 +61,16 @@ func AuthRegistration(c echo.Context) error {
 	mailMsg.SetHeader("From", config.Config.DefaultFromMail)
 	mailMsg.SetHeader("To", user.Email)
 	mailMsg.SetHeader("Subject", "Registration on gotodo")
-	mailMsg.SetBody("text/html", fmt.Sprintf("<h1>Hello</h1><p>Your confirmation link <a href=\"%s\">%s</a>", confirmationLink, confirmationLink))
+	mailMsg.SetBody(
+		"text/html",
+		fmt.Sprintf(
+			"<h1>Hello %s %s</h1><p>Your confirmation link <a href=\"%s\">%s</a>",
+			user.FirstName,
+			user.LastName,
+			confirmationLink,
+			confirmationLink,
+		),
+	)
 
 	mailDialer := gomail.NewDialer(config.Config.MailHost, config.Config.MailPort, config.Config.MailUsername, config.Config.MailPassword)
 	mailDialer.SSL = config.Config.MailSSL

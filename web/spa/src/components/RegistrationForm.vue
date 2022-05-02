@@ -8,16 +8,26 @@ import type {Arrayable} from "element-plus/es/utils";
 const formLoading = ref(false)
 const formRef = ref<FormInstance>()
 const form = reactive({
+  firstName: '',
+  lastName: '',
   email: '',
   password: '',
   repeatPassword: ''
 })
-const serverErrors = reactive<{[key: string]: string | undefined}>({
+const serverErrors = reactive<{ [key: string]: string | undefined }>({
+  firstName: undefined,
+  lastName: undefined,
   email: undefined,
   password: undefined
 })
 
 const rules: Partial<Record<string, Arrayable<FormItemRule>>> = reactive({
+  firstName: [
+    {required: true, message: 'Field is required', trigger: 'blur'},
+  ],
+  lastName: [
+    {required: true, message: 'Field is required', trigger: 'blur'},
+  ],
   email: [
     {required: true, message: 'Field is required', trigger: 'blur'},
     {type: 'email', message: 'Field is not correct email address', trigger: 'blur'}
@@ -60,6 +70,12 @@ const submit = async (formEl: FormInstance | undefined) => {
     label-width="120px"
     @submit.prevent.stop="submit(formRef)"
   >
+    <el-form-item label="Firstname" prop="firstName" :error="serverErrors.firstName">
+      <el-input v-model="form.firstName"/>
+    </el-form-item>
+    <el-form-item label="Lastname" prop="lastName" :error="serverErrors.lastName">
+      <el-input v-model="form.lastName"/>
+    </el-form-item>
     <el-form-item label="Email" prop="email" :error="serverErrors.email">
       <el-input v-model="form.email" type="email"/>
     </el-form-item>

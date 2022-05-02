@@ -13,8 +13,10 @@ import (
 
 type JwtClaims struct {
 	jwt.StandardClaims
-	ID    int64  `json:"id"`
-	Email string `json:"email"`
+	ID        int64  `json:"id"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
 }
 
 func GetAuthJwtClaims(c echo.Context) *JwtClaims {
@@ -54,8 +56,10 @@ func CreateTokens(user models.User) (schemas.AuthBaseResponse, error) {
 			ExpiresAt: dateCreated.Add(2 * time.Minute).Unix(),
 			Audience:  "access",
 		},
-		ID:    user.ID,
-		Email: user.Email,
+		ID:        user.ID,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
 	}).SignedString([]byte(config.Config.Secret))
 	if err != nil {
 		return response, fmt.Errorf("create tokens error: %v", err)
@@ -65,8 +69,10 @@ func CreateTokens(user models.User) (schemas.AuthBaseResponse, error) {
 			ExpiresAt: dateCreated.Add(30 * 24 * time.Hour).Unix(),
 			Audience:  "refresh",
 		},
-		ID:    user.ID,
-		Email: user.Email,
+		ID:        user.ID,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
 	}).SignedString([]byte(config.Config.Secret))
 	if err != nil {
 		return response, fmt.Errorf("create tokens error: %v", err)

@@ -14,10 +14,12 @@ CREATE TABLE IF NOT EXISTS tasks
 
 CREATE TABLE IF NOT EXISTS users
 (
-    id      BIGSERIAL,
-    email   VARCHAR(500) NOT NULL,
-    pw_hash VARCHAR(500) NOT NULL,
-    status  user_status DEFAULT 'pending',
+    id         BIGSERIAL,
+    first_name VARCHAR(500) NOT NULL,
+    last_name  VARCHAR(500) NOT NULL,
+    email      VARCHAR(500) NOT NULL,
+    pw_hash    VARCHAR(500) NOT NULL,
+    status     user_status DEFAULT 'pending',
     PRIMARY KEY (id)
 );
 

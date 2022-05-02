@@ -5,8 +5,10 @@ import (
 )
 
 type AuthRegistrationRequest struct {
-	Email    string `json:"email" validate:"required,email,user_email_exists"`
-	Password string `json:"password" validate:"required"`
+	FirstName string `json:"firstName" validate:"required"`
+	LastName  string `json:"lastName" validate:"required"`
+	Email     string `json:"email" validate:"required,email,user_email_exists"`
+	Password  string `json:"password" validate:"required"`
 }
 
 type AuthConfirmation struct {
