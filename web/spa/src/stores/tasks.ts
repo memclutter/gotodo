@@ -5,6 +5,7 @@ export type TasksState = {
   items: Task[]
   totalCount: Number,
   createDialog: Boolean,
+  createStatus: String
   updateDialog: Boolean,
   updateTask: Task
 }
@@ -14,6 +15,7 @@ export const useTasksStore = defineStore('tasks', {
     items: [],
     totalCount: 0,
     createDialog: false,
+    createStatus: '',
     updateDialog: false,
     updateTask: <Task>{}
   } as TasksState),
@@ -35,6 +37,9 @@ export const useTasksStore = defineStore('tasks', {
     },
     setCreateDialog(createDialog: boolean) {
       this.createDialog = createDialog
+    },
+    setCreateStatus(createStatus: string) {
+      this.createStatus = createStatus
     },
     setUpdateDialog(updateDialog: boolean) {
       this.updateDialog = updateDialog

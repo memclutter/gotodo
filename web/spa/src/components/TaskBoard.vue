@@ -64,14 +64,13 @@ const changeItems = async (e: DraggableEvent, status) => {
           />
         </template>
         <template #footer>
-          <el-button @click="tasksStore.setCreateDialog(true)">
+          <el-button @click="tasksStore.setCreateStatus(status.value); tasksStore.setCreateDialog(true)">
             <el-icon>
               <plus />
             </el-icon>
           </el-button>
         </template>
       </vue-draggable>
-
     </el-col>
   </el-row>
 </template>

@@ -20,6 +20,10 @@ const dialog = computed({
     title="Create a new task"
     width="30%"
   >
-    <task-form @success="tasksStore.append($event); tasksStore.setCreateDialog(false)"/>
+    <task-form
+      v-if="dialog"
+      :status="tasksStore.createStatus"
+      @success="tasksStore.append($event); tasksStore.setCreateDialog(false)"
+    />
   </el-dialog>
 </template>
