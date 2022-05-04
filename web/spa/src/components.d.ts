@@ -30,6 +30,7 @@ declare module 'vue' {
     TaskForm: typeof import('./components/TaskForm.vue')['default']
     TaskList: typeof import('./components/TaskList.vue')['default']
     TaskStatusSelect: typeof import('./components/TaskStatusSelect.vue')['default']
+    TaskUpdateDialog: typeof import('./components/TaskUpdateDialog.vue')['default']
   }
 }
 

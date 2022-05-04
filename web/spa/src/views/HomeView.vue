@@ -3,6 +3,7 @@ import tasksList from '@/apis/endpoints/tasks/list'
 import {onMounted} from "vue";
 import TaskBoard from "@/components/TaskBoard.vue";
 import {useTasksStore} from "@/stores/tasks";
+import TaskUpdateDialog from "@/components/TaskUpdateDialog.vue";
 
 const tasksStore = useTasksStore()
 
@@ -16,4 +17,5 @@ onMounted(async () => {
 <template>
   <task-board :items="tasksStore.items"/>
   <task-create-dialog />
+  <task-update-dialog />
 </template>

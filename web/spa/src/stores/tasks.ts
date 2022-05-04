@@ -5,6 +5,8 @@ export type TasksState = {
   items: Task[]
   totalCount: Number,
   createDialog: Boolean,
+  updateDialog: Boolean,
+  updateTask: Task
 }
 
 export const useTasksStore = defineStore('tasks', {
@@ -12,6 +14,8 @@ export const useTasksStore = defineStore('tasks', {
     items: [],
     totalCount: 0,
     createDialog: false,
+    updateDialog: false,
+    updateTask: <Task>{}
   } as TasksState),
   actions: {
     set(state: TasksListResponse) {
@@ -22,12 +26,24 @@ export const useTasksStore = defineStore('tasks', {
       this.items.push(task)
       this.totalCount += 1
     },
+    update(task: Task) {
+      this.items.map(item => item.id === task.id ? task : item)
+    },
     delete(id: number) {
       this.items = this.items.filter(item => item.id !== id)
       this.totalCount = this.items.length;
     },
     setCreateDialog(createDialog: boolean) {
       this.createDialog = createDialog
+    },
+    setUpdateDialog(updateDialog: boolean) {
+      this.updateDialog = updateDialog
+    },
+    setUpdateTask(taskId: number) {
+      this.updateTask = this.items.find(item => item.id === taskId)
+    },
+    unsetUpdateTask() {
+      this.updateTask = <Task>{}
     }
   }
 })

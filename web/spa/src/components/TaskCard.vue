@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Edit, Delete} from "@element-plus/icons-vue";
+import {Delete, Edit} from "@element-plus/icons-vue";
 import tasksDelete from "@/apis/endpoints/tasks/delete"
 import {useTasksStore} from "@/stores/tasks";
 
@@ -18,6 +18,11 @@ const del = async () => {
     tasksStore.delete(<number>props.id)
   }
 }
+
+const update = async () => {
+  tasksStore.setUpdateTask(<number>props.id)
+  tasksStore.setUpdateDialog(true)
+}
 </script>
 
 <template>
@@ -25,12 +30,12 @@ const del = async () => {
     <template #header>
       <el-row justify="space-between" align="middle">
         <el-col :span="18">
-          {{title}}
+          {{ title }}
         </el-col>
         <el-col :span="6" style="text-align: right">
-          <el-button>
+          <el-button @click="update">
             <el-icon>
-              <edit />
+              <edit/>
             </el-icon>
           </el-button>
           <el-button @click="del">
@@ -42,7 +47,7 @@ const del = async () => {
       </el-row>
     </template>
     <div>
-      {{description}}
+      {{ description }}
     </div>
   </el-card>
 </template>
