@@ -38,11 +38,18 @@ const update = async () => {
               <edit/>
             </el-icon>
           </el-button>
-          <el-button @click="del">
-            <el-icon>
-              <delete/>
-            </el-icon>
-          </el-button>
+          <el-popconfirm
+            title="Are you sure to delete this task?"
+            @confirm="del"
+          >
+            <template #reference>
+              <el-button>
+                <el-icon>
+                  <delete/>
+                </el-icon>
+              </el-button>
+            </template>
+          </el-popconfirm>
         </el-col>
       </el-row>
     </template>
