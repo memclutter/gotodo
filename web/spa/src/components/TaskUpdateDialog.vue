@@ -20,6 +20,10 @@ const dialog = computed({
     title="Update task"
     width="30%"
   >
-    <task-form @success="tasksStore.update($event); tasksStore.setUpdateDialog(false)"/>
+    <task-form
+      v-if="dialog"
+      v-bind="tasksStore.updateTask"
+      @success="tasksStore.update($event); tasksStore.setUpdateDialog(false)"
+    />
   </el-dialog>
 </template>

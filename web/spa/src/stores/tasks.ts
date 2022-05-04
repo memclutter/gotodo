@@ -27,7 +27,7 @@ export const useTasksStore = defineStore('tasks', {
       this.totalCount += 1
     },
     update(task: Task) {
-      this.items.map(item => item.id === task.id ? task : item)
+      this.items = this.items.map(item => item.id === task.id ? task : item)
     },
     delete(id: number) {
       this.items = this.items.filter(item => item.id !== id)
