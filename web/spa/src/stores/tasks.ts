@@ -4,6 +4,7 @@ import type {TasksListResponse} from "@/apis/endpoints/tasks/list";
 export type TasksState = {
   items: Task[]
   totalCount: Number,
+  listView: String,
   createDialog: Boolean,
   createStatus: String
   updateDialog: Boolean,
@@ -14,6 +15,7 @@ export const useTasksStore = defineStore('tasks', {
   state: () => ({
     items: [],
     totalCount: 0,
+    listView: 'board',
     createDialog: false,
     createStatus: '',
     updateDialog: false,
@@ -23,6 +25,9 @@ export const useTasksStore = defineStore('tasks', {
     set(state: TasksListResponse) {
       this.items = state.items
       this.totalCount = state.totalCount
+    },
+    setListView(listView: string) {
+      this.listView = listView
     },
     append(task: Task) {
       this.items.push(task)
