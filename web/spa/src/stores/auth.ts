@@ -1,10 +1,5 @@
 import {defineStore} from "pinia";
-import Cookies from 'js-cookie';
 import jwtDecode from 'jwt-decode';
-
-const persistRefreshToken = Cookies.get('auth.refreshToken')
-const persistAccessToken = Cookies.get('auth.accessToken')
-const persistUser = persistAccessToken ? <AuthStateUser>jwtDecode(<string>persistAccessToken) : <AuthStateUser>{}
 
 export type AuthStateUser = {
   id: Number,
@@ -21,15 +16,22 @@ export type AuthState = {
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    accessToken: '' || persistAccessToken,
-    refreshToken: '' || persistRefreshToken,
+    accessToken: '',
+    refreshToken: '',
     user: {
       id: 0,
       firstName: '',
       lastName: '',
       email: ''
-    } || persistUser
+    }
   } as AuthState),
+  persist: {
+    key: 'auth',
+    paths: ['accessToken', 'refreshToken'],
+    afterRestore({store}) {
+      store.user = store.accessToken ? <AuthStateUser>jwtDecode(<string>store.accessToken) : <AuthStateUser>{}
+    }
+  },
   getters: {
     isAuth(state: AuthState) {
       return !!state.accessToken
@@ -49,17 +51,11 @@ export const useAuthStore = defineStore('auth', {
       this.user.firstName = state.user.firstName
       this.user.lastName = state.user.lastName
       this.user.email = state.user.email
-
-      Cookies.set('auth.accessToken', state.accessToken)
-      Cookies.set('auth.refreshToken', state.refreshToken)
     },
     unset() {
       this.accessToken = ''
       this.refreshToken = ''
       this.user = <AuthStateUser>{}
-
-      Cookies.remove('auth.accessToken')
-      Cookies.remove('auth.refreshToken')
     }
   }
 })
