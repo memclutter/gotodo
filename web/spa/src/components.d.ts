@@ -25,6 +25,7 @@ declare module 'vue' {
     Loading: typeof import('element-plus/es')['ElLoadingDirective']
     LoginForm: typeof import('./components/LoginForm.vue')['default']
     Navigation: typeof import('./components/Navigation.vue')['default']
+    ProfileForm: typeof import('./components/ProfileForm.vue')['default']
     RegistrationForm: typeof import('./components/RegistrationForm.vue')['default']
     TaskBoard: typeof import('./components/TaskBoard.vue')['default']
     TaskCard: typeof import('./components/TaskCard.vue')['default']
