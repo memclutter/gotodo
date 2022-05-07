@@ -1,4 +1,4 @@
-import {ProfilePasswordUpdateRequest, ProfileUpdateRequest} from "@/apis/schemas/profile";
+import type {ProfilePasswordUpdateRequest, ProfileUpdateRequest} from "@/apis/schemas/profile";
 import type {CustomAxiosResponse} from "@/apis/schemas";
 import type {User} from "@/models/users";
 import {baseAxios} from "@/apis";

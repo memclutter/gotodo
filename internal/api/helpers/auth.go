@@ -42,7 +42,8 @@ func GetAuthUser(c echo.Context) (*models.User, error) {
 		if err := query.Scan(c.Request().Context()); err != nil {
 			return nil, fmt.Errorf("middleware user error: %v", err)
 		}
-		c.Set("auth.user", user)
+		c.Set("auth.user", &user)
+		authUserValue = &user
 	}
 	return authUserValue.(*models.User), nil
 }

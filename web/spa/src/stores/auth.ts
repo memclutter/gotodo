@@ -46,6 +46,12 @@ export const useAuthStore = defineStore('auth', {
       this.user.lastName = state.user.lastName
       this.user.email = state.user.email
     },
+    setUser(user: User) {
+      this.user.id = user.id
+      this.user.firstName = user.firstName
+      this.user.lastName = user.lastName
+      this.user.email = user.email
+    },
     unset() {
       this.accessToken = ''
       this.refreshToken = ''

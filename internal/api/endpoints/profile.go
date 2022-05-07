@@ -54,7 +54,7 @@ func ProfileUpdate(c echo.Context) error {
 	}
 	authUser.FirstName = req.FirstName
 	authUser.LastName = req.LastName
-	if _, err = models.DB.NewInsert().Model(&authUser).Exec(ctx); err != nil {
+	if _, err = models.DB.NewUpdate().Model(authUser).WherePK().Exec(ctx); err != nil {
 		return fmt.Errorf("auth user update error: %v", err)
 	}
 	return c.JSON(http.StatusOK, authUser)
@@ -91,7 +91,7 @@ func ProfilePasswordUpdate(c echo.Context) error {
 		})
 	}
 	authUser.PwHash = security.PasswordMustGenerate(req.NewPassword)
-	if _, err = models.DB.NewInsert().Model(&authUser).Exec(ctx); err != nil {
+	if _, err = models.DB.NewUpdate().Model(authUser).WherePK().Exec(ctx); err != nil {
 		return fmt.Errorf("auth user update error: %v", err)
 	}
 	return c.JSON(http.StatusOK, authUser)
