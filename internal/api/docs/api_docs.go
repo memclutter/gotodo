@@ -195,6 +195,82 @@ const docTemplate_api = `{
                 }
             }
         },
+        "/profile/": {
+            "get": {
+                "security": [
+                    {
+                        "ApiHeaderAuth": []
+                    }
+                ],
+                "description": "Get profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Retrieve",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiHeaderAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Update",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schemas.ProfileUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/tasks/": {
             "get": {
                 "security": [
@@ -426,6 +502,7 @@ const docTemplate_api = `{
         "models.Task": {
             "type": "object",
             "required": [
+                "status",
                 "title"
             ],
             "properties": {
@@ -439,7 +516,7 @@ const docTemplate_api = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "title": {
                     "type": "string"
@@ -447,7 +524,7 @@ const docTemplate_api = `{
                 "user": {
                     "$ref": "#/definitions/models.User"
                 },
-                "user_id": {
+                "userId": {
                     "type": "integer"
                 }
             }
@@ -458,14 +535,20 @@ const docTemplate_api = `{
                 "email": {
                     "type": "string"
                 },
+                "firstName": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
                 },
                 "password": {
                     "type": "string"
                 },
                 "status": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
@@ -538,10 +621,18 @@ const docTemplate_api = `{
             "type": "object",
             "required": [
                 "email",
+                "firstName",
+                "lastName",
                 "password"
             ],
             "properties": {
                 "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
                     "type": "string"
                 },
                 "password": {
@@ -556,6 +647,21 @@ const docTemplate_api = `{
                 "validationErrors": {}
             }
         },
+        "schemas.ProfileUpdate": {
+            "type": "object",
+            "required": [
+                "firstName",
+                "lastName"
+            ],
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                }
+            }
+        },
         "schemas.TasksListResponse": {
             "type": "object",
             "properties": {
@@ -565,7 +671,7 @@ const docTemplate_api = `{
                         "$ref": "#/definitions/models.Task"
                     }
                 },
-                "total_count": {
+                "totalCount": {
                     "type": "integer"
                 }
             }

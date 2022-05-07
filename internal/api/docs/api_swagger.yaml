@@ -9,26 +9,31 @@ definitions:
       id:
         type: integer
       status:
-        type: integer
+        type: string
       title:
         type: string
       user:
         $ref: '#/definitions/models.User'
-      user_id:
+      userId:
         type: integer
     required:
+    - status
     - title
     type: object
   models.User:
     properties:
       email:
         type: string
+      firstName:
+        type: string
       id:
         type: integer
+      lastName:
+        type: string
       password:
         type: string
       status:
-        type: integer
+        type: string
     type: object
   schemas.AuthConfirmation:
     properties:
@@ -76,10 +81,16 @@ definitions:
     properties:
       email:
         type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
       password:
         type: string
     required:
     - email
+    - firstName
+    - lastName
     - password
     type: object
   schemas.Error:
@@ -87,13 +98,23 @@ definitions:
       message: {}
       validationErrors: {}
     type: object
+  schemas.ProfileUpdate:
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+    required:
+    - firstName
+    - lastName
+    type: object
   schemas.TasksListResponse:
     properties:
       items:
         items:
           $ref: '#/definitions/models.Task'
         type: array
-      total_count:
+      totalCount:
         type: integer
     type: object
 host: localhost
@@ -220,6 +241,53 @@ paths:
       summary: Registration
       tags:
       - auth
+  /profile/:
+    get:
+      consumes:
+      - application/json
+      description: Get profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: Retrieve
+      tags:
+      - profile
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.ProfileUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: Update
+      tags:
+      - profile
   /tasks/:
     get:
       consumes:

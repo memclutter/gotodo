@@ -57,5 +57,11 @@ func RunServer() error {
 		tasks.DELETE("/:id/", endpoints.TasksDelete)
 	}
 
+	profile := e.Group("/profile", authMiddleware)
+	{
+		profile.GET("/", endpoints.ProfileRetrieve)
+		profile.PUT("/", endpoints.ProfileUpdate)
+	}
+
 	return e.Start(":8000")
 }
