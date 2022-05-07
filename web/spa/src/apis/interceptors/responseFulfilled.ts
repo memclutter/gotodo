@@ -1,5 +1,5 @@
 import type {AxiosResponse} from "axios";
-import type {CustomAxiosResponse} from "@/apis/utils";
+import type {CustomAxiosResponse} from "@/apis/schemas";
 
 export default function (response: AxiosResponse<any, any>): CustomAxiosResponse {
   console.log('apis interceptors response fulfilled', response)

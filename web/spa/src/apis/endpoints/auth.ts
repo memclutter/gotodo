@@ -1,7 +1,7 @@
-import baseAxios from "@/apis/base";
-import type {CustomAxiosResponse} from "@/apis/utils";
+import {baseAxios} from "@/apis";
+import type {CustomAxiosResponse} from "@/apis/schemas";
 import type {AuthConfirmationRequest} from "@/apis/schemas/auth";
-import {
+import type {
   AuthLoginRequest,
   AuthLoginResponse,
   AuthRefreshRequest,

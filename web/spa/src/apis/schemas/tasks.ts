@@ -1,4 +1,4 @@
-import {Task} from "@/models/tasks";
+import type {Task} from "@/models/tasks";
 
 export interface TasksListRequest {}
 

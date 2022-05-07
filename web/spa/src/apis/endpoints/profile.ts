@@ -1,7 +1,7 @@
 import {ProfilePasswordUpdateRequest, ProfileUpdateRequest} from "@/apis/schemas/profile";
-import {CustomAxiosResponse} from "@/apis/utils";
-import {User} from "@/models/users";
-import baseAxios from "@/apis/base";
+import type {CustomAxiosResponse} from "@/apis/schemas";
+import type {User} from "@/models/users";
+import {baseAxios} from "@/apis";
 
 export async function profilePasswordUpdate(data: ProfilePasswordUpdateRequest): Promise<CustomAxiosResponse<User, ProfilePasswordUpdateRequest>> {
   return await baseAxios.put('/profile/password/', data)

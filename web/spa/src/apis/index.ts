@@ -11,4 +11,4 @@ const baseAxios = axios.create({
 baseAxios.interceptors.request.use(requestFulfilled, requestRejected)
 baseAxios.interceptors.response.use(responseFulfilled, responseRejected)
 
-export default baseAxios;
+export {baseAxios};

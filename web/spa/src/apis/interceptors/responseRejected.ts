@@ -2,8 +2,8 @@ import {ElMessage} from "element-plus";
 import type {AxiosError, AxiosResponse} from "axios";
 import {authRefresh} from "@/apis/endpoints/auth";
 import {useAuthStore} from "@/stores/auth";
-import baseAxios from "@/apis/base";
-import type {CustomAxiosResponse} from "@/apis/utils";
+import {baseAxios} from "@/apis";
+import type {CustomAxiosResponse} from "@/apis/schemas";
 
 export interface Error {
   message?: String

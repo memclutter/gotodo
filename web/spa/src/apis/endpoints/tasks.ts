@@ -1,7 +1,7 @@
-import {Task} from "@/models/tasks";
-import {CustomAxiosResponse} from "@/apis/utils";
-import baseAxios from "@/apis/base";
-import {TasksListRequest, TasksListResponse} from "@/apis/schemas/tasks";
+import type {Task} from "@/models/tasks";
+import type {CustomAxiosResponse} from "@/apis/schemas";
+import {baseAxios} from "@/apis";
+import type {TasksListRequest, TasksListResponse} from "@/apis/schemas/tasks";
 
 export async function tasksCreate(data: Task): Promise<CustomAxiosResponse<Task, Task>> {
   return await baseAxios.post('/tasks/', data)
