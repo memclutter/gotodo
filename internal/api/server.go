@@ -21,7 +21,7 @@ import (
 // @BasePath /api/
 //
 // @securityDefinitions.apiKey ApiKeyHeader
-// @in Header
+// @in header
 // @name Authorization
 //
 // @tag.name auth
@@ -29,6 +29,9 @@ import (
 //
 // @tag.name tasks
 // @tag.description Tasks endpoint
+//
+// @tag.name profile
+// @tag.description Profile endpoint
 func RunServer() error {
 	e := echo.New()
 	e.Debug = config.Config.Debug
