@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import type {Task} from "@/models/tasks";
-import type {TasksListResponse} from "@/apis/endpoints/tasks/list";
+import type {TasksListResponse} from "@/apis/schemas/tasks";
+
 export type TasksState = {
   items: Task[]
   totalCount: Number,
