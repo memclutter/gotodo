@@ -180,7 +180,6 @@ func AuthLogin(c echo.Context) error {
 // @Summary			Refresh
 // @Description		Refresh exists session
 // @Tags			auth
-// @Tags			auth
 // @Accept			json
 // @Produce			json
 // @Param			request						body		schemas.AuthRefreshRequest	true	"Request data"
