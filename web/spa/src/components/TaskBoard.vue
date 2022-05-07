@@ -3,7 +3,7 @@ import {statuses} from '@/models/tasks'
 import type {Task} from '@/models/tasks'
 import {computed} from "vue";
 import TaskCard from "@/components/TaskCard.vue";
-import tasksUpdate from "@/apis/endpoints/tasks/update";
+import {tasksUpdate} from "@/apis/endpoints/tasks";
 import {Plus} from "@element-plus/icons-vue";
 import {useTasksStore} from "@/stores/tasks";
 

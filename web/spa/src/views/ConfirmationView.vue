@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {useRoute, useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
-import authConfirmation from '@/apis/endpoints/auth/confirmation'
+import {authConfirmation} from '@/apis/endpoints/auth'
 import {ElMessage} from "element-plus";
 
 const route = useRoute()

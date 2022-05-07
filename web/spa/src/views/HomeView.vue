@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import tasksList from '@/apis/endpoints/tasks/list'
+import {tasksList} from '@/apis/endpoints/tasks'
 import {onMounted} from "vue";
 import TaskBoard from "@/components/TaskBoard.vue";
 import {useTasksStore} from "@/stores/tasks";

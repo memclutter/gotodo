@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {reactive, ref} from "vue";
-import authRegistration from '@/apis/endpoints/auth/registration'
+import {authRegistration} from '@/apis/endpoints/auth'
 import type {FormInstance, FormItemRule} from "element-plus";
 import {ElMessage} from "element-plus";
 import type {Arrayable} from "element-plus/es/utils";

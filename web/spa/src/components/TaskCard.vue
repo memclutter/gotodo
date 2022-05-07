@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Delete, Edit} from "@element-plus/icons-vue";
-import tasksDelete from "@/apis/endpoints/tasks/delete"
+import {tasksDelete} from "@/apis/endpoints/tasks"
 import {useTasksStore} from "@/stores/tasks";
 
 const props = defineProps({

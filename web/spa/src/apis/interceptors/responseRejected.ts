@@ -1,6 +1,6 @@
 import {ElMessage} from "element-plus";
 import type {AxiosError, AxiosResponse} from "axios";
-import authRefresh from '@/apis/endpoints/auth/refresh'
+import {authRefresh} from "@/apis/endpoints/auth";
 import {useAuthStore} from "@/stores/auth";
 import baseAxios from "@/apis/base";
 import type {CustomAxiosResponse} from "@/apis/utils";

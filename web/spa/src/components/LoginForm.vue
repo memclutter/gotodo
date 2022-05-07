@@ -2,7 +2,7 @@
 import {reactive, ref} from "vue";
 import type {FormInstance, FormItemRule} from "element-plus";
 import {useAuthStore} from "@/stores/auth";
-import authLogin from "@/apis/endpoints/auth/login";
+import {authLogin} from "@/apis/endpoints/auth";
 import {useRouter} from "vue-router";
 import type {Arrayable} from "element-plus/es/utils";
 

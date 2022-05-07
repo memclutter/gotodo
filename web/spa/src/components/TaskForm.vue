@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import {reactive, ref} from "vue";
 import type {FormInstance, FormItemRule} from "element-plus";
-import tasksCreate from "@/apis/endpoints/tasks/create";
-import taskUpdate from "@/apis/endpoints/tasks/update"
+import {tasksCreate, tasksUpdate} from "@/apis/endpoints/tasks";
 import {useRouter} from "vue-router";
 import type {Arrayable} from "element-plus/es/utils";
 import TaskStatusSelect from "@/components/TaskStatusSelect.vue";
@@ -45,7 +44,7 @@ const submit = async (formEl: FormInstance | undefined) => {
   formLoading.value = true;
   await formEl.validate(async (valid) => {
     if (valid) {
-      const {success, validationErrors, data} = props.id ? await taskUpdate(<number>props.id, <Task>form) : await tasksCreate(<Task>form)
+      const {success, validationErrors, data} = props.id ? await tasksUpdate(<number>props.id, <Task>form) : await tasksCreate(<Task>form)
       if (success) {
         emits('success', data)
         formEl.resetFields()
