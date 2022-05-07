@@ -98,6 +98,16 @@ definitions:
       message: {}
       validationErrors: {}
     type: object
+  schemas.ProfilePasswordUpdate:
+    properties:
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+    required:
+    - newPassword
+    - oldPassword
+    type: object
   schemas.ProfileUpdate:
     properties:
       firstName:
@@ -285,6 +295,33 @@ paths:
       security:
       - ApiHeaderAuth: []
       summary: Update
+      tags:
+      - profile
+  /profile/password/:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.ProfilePasswordUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: Password Update
       tags:
       - profile
   /tasks/:

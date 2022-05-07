@@ -64,6 +64,7 @@ func RunServer() error {
 	{
 		profile.GET("/", endpoints.ProfileRetrieve)
 		profile.PUT("/", endpoints.ProfileUpdate)
+		profile.PUT("/password/", endpoints.ProfilePasswordUpdate)
 	}
 
 	return e.Start(":8000")

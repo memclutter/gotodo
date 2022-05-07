@@ -270,6 +270,50 @@ const docTemplate_api = `{
                 }
             }
         },
+        "/profile/password/": {
+            "put": {
+                "security": [
+                    {
+                        "ApiHeaderAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Password Update",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schemas.ProfilePasswordUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/tasks/": {
             "get": {
                 "security": [
@@ -644,6 +688,21 @@ const docTemplate_api = `{
             "properties": {
                 "message": {},
                 "validationErrors": {}
+            }
+        },
+        "schemas.ProfilePasswordUpdate": {
+            "type": "object",
+            "required": [
+                "newPassword",
+                "oldPassword"
+            ],
+            "properties": {
+                "newPassword": {
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "type": "string"
+                }
             }
         },
         "schemas.ProfileUpdate": {
