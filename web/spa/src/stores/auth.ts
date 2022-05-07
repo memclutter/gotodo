@@ -1,17 +1,11 @@
 import {defineStore} from "pinia";
 import jwtDecode from 'jwt-decode';
-
-export type AuthStateUser = {
-  id: Number,
-  firstName: String,
-  lastName: String,
-  email: String
-}
+import type {User} from "@/models/users";
 
 export type AuthState = {
   accessToken: String
   refreshToken: String
-  user: AuthStateUser
+  user: User
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -29,7 +23,7 @@ export const useAuthStore = defineStore('auth', {
     key: 'auth',
     paths: ['accessToken', 'refreshToken'],
     afterRestore({store}) {
-      store.user = store.accessToken ? <AuthStateUser>jwtDecode(<string>store.accessToken) : <AuthStateUser>{}
+      store.user = store.accessToken ? <User>jwtDecode(<string>store.accessToken) : <User>{}
     }
   },
   getters: {
