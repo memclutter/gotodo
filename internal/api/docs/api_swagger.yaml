@@ -212,7 +212,6 @@ paths:
       summary: Refresh
       tags:
       - auth
-      - auth
   /auth/registration/:
     post:
       consumes:
@@ -433,7 +432,7 @@ paths:
       - tasks
 securityDefinitions:
   ApiKeyHeader:
-    in: Header
+    in: header
     name: Authorization
     type: apiKey
 swagger: "2.0"
@@ -442,3 +441,5 @@ tags:
   name: auth
 - description: Tasks endpoint
   name: tasks
+- description: Profile endpoint
+  name: profile

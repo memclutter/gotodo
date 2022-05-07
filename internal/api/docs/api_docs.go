@@ -115,7 +115,6 @@ const docTemplate_api = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth",
                     "auth"
                 ],
                 "summary": "Refresh",
@@ -681,7 +680,7 @@ const docTemplate_api = `{
         "ApiKeyHeader": {
             "type": "apiKey",
             "name": "Authorization",
-            "in": "Header"
+            "in": "header"
         }
     },
     "tags": [
@@ -692,6 +691,10 @@ const docTemplate_api = `{
         {
             "description": "Tasks endpoint",
             "name": "tasks"
+        },
+        {
+            "description": "Profile endpoint",
+            "name": "profile"
         }
     ]
 }`
