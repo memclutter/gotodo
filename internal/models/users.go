@@ -16,8 +16,9 @@ type User struct {
 	Status    string `bun:",type:user_status" json:"status"`
 }
 
+//goland:noinspection GoUnusedConst
 const (
 	UserStatusPending = "pending"
 	UserStatusActive  = "active"
-	UserStatusBlock   = "block"
+	UserStatusDelete  = "delete"
 )

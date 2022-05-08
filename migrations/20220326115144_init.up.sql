@@ -1,11 +1,11 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Create custom types
 -- ---------------------------------------------------------------------------------------------------------------------
-CREATE TYPE task_status AS ENUM ('active', 'deleted');
-CREATE TYPE user_status AS ENUM ('pending', 'active', 'deleted');
+CREATE TYPE task_status AS ENUM ('active', 'archive', 'delete');
+CREATE TYPE user_status AS ENUM ('pending', 'active', 'delete');
 CREATE TYPE access_role AS ENUM ('member', 'admin');
-CREATE TYPE group_status AS ENUM ('active', 'archive', 'deleted');
-CREATE TYPE project_status AS ENUM ('active', 'archive', 'deleted');
+CREATE TYPE group_status AS ENUM ('active', 'archive', 'delete');
+CREATE TYPE project_status AS ENUM ('active', 'archive', 'delete');
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Create tables
