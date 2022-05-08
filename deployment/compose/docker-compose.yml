@@ -56,7 +56,7 @@ services:
       - ingress
       - backend
     environment:
-      DSN_DB: 'postgresql://go_todo:go_todo@db:5432/go_todo?sslmode=disable'
+      DSN_DB: 'postgresql://gotodo:gotodo@db:5432/gotodo?sslmode=disable'
       DSN_MAIL: '${DSN_MAIL}'
       DEFAULT_FROM_MAIL: '${DEFAULT_FROM_MAIL}'
       URL_BASE: 'http://${DOMAIN}'
@@ -73,7 +73,7 @@ services:
     networks:
       - backend
     environment:
-      DSN_DB: 'postgresql://go_todo:go_todo@db:5432/go_todo?sslmode=disable'
+      DSN_DB: 'postgresql://gotodo:gotodo@db:5432/gotodo?sslmode=disable'
     volumes:
       - "../../migrations/:/var/app/migrations"
     entrypoint: '/bin/sh -c "dockerize -wait tcp://db:5432 /go/bin/migrate -path /var/app/migrations -database $${DSN_DB} up"'
@@ -88,6 +88,6 @@ services:
     environment:
       BITNAMI_DEBUG: 'yes'
       ALLOW_EMPTY_PASSWORD: 'no'
-      POSTGRESQL_USERNAME: 'go_todo'
-      POSTGRESQL_PASSWORD: 'go_todo'
-      POSTGRESQL_DATABASE: 'go_todo'
+      POSTGRESQL_USERNAME: 'gotodo'
+      POSTGRESQL_PASSWORD: 'gotodo'
+      POSTGRESQL_DATABASE: 'gotodo'

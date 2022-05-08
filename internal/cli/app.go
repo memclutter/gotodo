@@ -12,7 +12,7 @@ func NewApp() *cli.App {
 		Name:    "gotodo",
 		Version: "0.0.0",
 		Flags: []cli.Flag{
-			&cli.StringFlag{Name: "dsnDb", Value: "postgresql://go_todo:go_todo@localhost:5432/go_todo?sslmode=disable", EnvVars: []string{"DSN_DB"}},
+			&cli.StringFlag{Name: "dsnDb", Value: "postgresql://gotodo:gotodo@localhost:5432/gotodo?sslmode=disable", EnvVars: []string{"DSN_DB"}},
 			&cli.StringFlag{Name: "dsnMail", EnvVars: []string{"DSN_MAIL"}},
 			&cli.StringFlag{Name: "defaultFromMail", EnvVars: []string{"DEFAULT_FROM_MAIL"}},
 			&cli.StringFlag{Name: "urlBase", Value: "http://localhost:3000/", EnvVars: []string{"URL_BASE"}},
