@@ -60,6 +60,15 @@ func RunServer() error {
 		tasks.DELETE("/:id/", endpoints.TasksDelete)
 	}
 
+	groups := e.Group("/groups", authMiddleware)
+	{
+		groups.GET("/", endpoints.GroupsList)
+		groups.POST("/", endpoints.GroupsCreate)
+		groups.GET("/:id/", endpoints.GroupsRetrieve)
+		groups.PUT("/:id/", endpoints.GroupsUpdate)
+		groups.DELETE("/:id/", endpoints.GroupsDelete)
+	}
+
 	profile := e.Group("/profile", authMiddleware)
 	{
 		profile.GET("/", endpoints.ProfileRetrieve)
