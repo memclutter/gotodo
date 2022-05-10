@@ -10,6 +10,7 @@ import (
 	"github.com/memclutter/gotodo/internal/models"
 	"github.com/uptrace/bun"
 	"net/http"
+	"strconv"
 )
 
 // GroupsList godoc
@@ -108,7 +109,29 @@ func GroupsCreate(c echo.Context) (err error) {
 // @Failure			500				{object}	schemas.Error					true	"Server error"
 // @Security		ApiHeaderAuth
 func GroupsRetrieve(c echo.Context) error {
-	return nil
+	ctx := c.Request().Context()
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "group not found")
+	}
+	group := models.Group{ID: id}
+	query := models.DB.NewSelect().Model(&group).
+		ColumnExpr("g.*").
+		Relation("Projects").
+		Join("INNER JOIN access AS a ON a.group_id = g.id").
+		Where("status = ?", models.GroupStatusActive).
+		Where("a.user_id = ?", authJwtClaims.ID)
+	if err := query.Scan(ctx); err != nil {
+		return fmt.Errorf("group retrieve error: %v", err)
+	}
+
+	// @FIXME replace nil -> [] in projects
+	if group.Projects == nil {
+		group.Projects = make([]models.Project, 0)
+	}
+
+	return c.JSON(http.StatusOK, group)
 }
 
 // GroupsUpdate godoc
