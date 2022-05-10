@@ -83,14 +83,14 @@ func ProfilePasswordUpdate(c echo.Context) error {
 	} else if err := c.Validate(&req); err != nil {
 		return err
 	}
-	if !security.PasswordValidate(req.OldPassword, authUser.PwHash) {
+	if !security.PasswordValidate(req.OldPassword, authUser.PasswordHash) {
 		return c.JSON(http.StatusBadRequest, schemas.Error{
 			ValidationErrors: map[string][]string{
 				"oldPassword": {"INCORRECT"},
 			},
 		})
 	}
-	authUser.PwHash = security.PasswordMustGenerate(req.NewPassword)
+	authUser.PasswordHash = security.PasswordMustGenerate(req.NewPassword)
 	if _, err = models.DB.NewUpdate().Model(authUser).WherePK().Exec(ctx); err != nil {
 		return fmt.Errorf("auth user update error: %v", err)
 	}

@@ -39,11 +39,11 @@ func AuthRegistration(c echo.Context) error {
 		return err
 	}
 	user := models.User{
-		FirstName: req.FirstName,
-		LastName:  req.LastName,
-		Email:     req.Email,
-		PwHash:    security.PasswordMustGenerate(req.Password),
-		Status:    models.UserStatusPending,
+		FirstName:    req.FirstName,
+		LastName:     req.LastName,
+		Email:        req.Email,
+		PasswordHash: security.PasswordMustGenerate(req.Password),
+		Status:       models.UserStatusPending,
 	}
 	if _, err := models.DB.NewInsert().Model(&user).Exec(ctx); err != nil {
 		return fmt.Errorf("auth registration error: %v", err)
@@ -162,7 +162,7 @@ func AuthLogin(c echo.Context) error {
 	} else if err != nil {
 		return fmt.Errorf("auth login error: %v", err)
 	}
-	if !security.PasswordValidate(req.Password, user.PwHash) {
+	if !security.PasswordValidate(req.Password, user.PasswordHash) {
 		return c.JSON(http.StatusBadRequest, "Invalid credentials")
 	}
 	baseRes, err := helpers.CreateTokens(user)
