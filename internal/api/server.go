@@ -27,6 +27,9 @@ import (
 // @tag.name auth
 // @tag.description Auth endpoints
 //
+// @tag.name groups
+// @tag.description Groups endpoints
+//
 // @tag.name tasks
 // @tag.description Tasks endpoint
 //

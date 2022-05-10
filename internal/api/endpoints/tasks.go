@@ -60,7 +60,8 @@ func TasksCreate(c echo.Context) (err error) {
 	} else if err := c.Validate(&task); err != nil {
 		return err
 	}
-	task.UserID = authJwtClaims.ID
+	// @FIXME set task author?
+	//task.UserID = authJwtClaims.ID
 	if _, err = models.DB.NewInsert().Model(&task).Exec(ctx); err != nil {
 		return fmt.Errorf("tasks create error: %v", err)
 	}

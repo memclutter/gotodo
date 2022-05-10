@@ -1,7 +1,35 @@
 basePath: /api/
 definitions:
+  models.Group:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      status:
+        type: string
+    required:
+    - name
+    type: object
+  models.ProjectStatus:
+    properties:
+      id:
+        type: integer
+      isFinal:
+        type: boolean
+      name:
+        type: string
+      projectId:
+        type: integer
+      sortOrder:
+        type: integer
+    type: object
   models.Task:
     properties:
+      customStatus:
+        $ref: '#/definitions/models.ProjectStatus'
+      customStatusId:
+        type: integer
       dateCreated:
         type: string
       description:
@@ -14,8 +42,6 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/models.User'
-      userId:
-        type: integer
     required:
     - status
     - title
@@ -97,6 +123,15 @@ definitions:
     properties:
       message: {}
       validationErrors: {}
+    type: object
+  schemas.GroupsListResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/models.Group'
+        type: array
+      totalCount:
+        type: integer
     type: object
   schemas.ProfilePasswordUpdate:
     properties:
@@ -250,6 +285,150 @@ paths:
       summary: Registration
       tags:
       - auth
+  /groups/:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schemas.GroupsListResponse'
+            type: array
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: List
+      tags:
+      - groups
+    post:
+      consumes:
+      - application/json
+      description: Create a new group
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Group'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Group'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: Create
+      tags:
+      - groups
+  /groups/{id}/:
+    delete:
+      consumes:
+      - application/json
+      description: Delete group
+      parameters:
+      - description: Group identifier
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: ""
+        "404":
+          description: ""
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: Delete
+      tags:
+      - groups
+    get:
+      consumes:
+      - application/json
+      description: Get group detail
+      parameters:
+      - description: Group identifier
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Group'
+        "404":
+          description: ""
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: Retrieve
+      tags:
+      - groups
+    put:
+      consumes:
+      - application/json
+      description: Update group
+      parameters:
+      - description: Group identifier
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Group'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Group'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: Update
+      tags:
+      - groups
   /profile/:
     get:
       consumes:
@@ -476,6 +655,8 @@ swagger: "2.0"
 tags:
 - description: Auth endpoints
   name: auth
+- description: Groups endpoints
+  name: groups
 - description: Tasks endpoint
   name: tasks
 - description: Profile endpoint
