@@ -25,9 +25,9 @@ func GroupsList(c echo.Context) (err error) {
 	totalCount := 0
 	groups := make([]models.Group, 0)
 	query := models.DB.NewSelect().Model(&groups).
-		ColumnExpr("groups.*").
+		ColumnExpr("g.*").
 		Relation("Projects").
-		Join("INNER JOIN access AS a ON a.group_id = group.id").
+		Join("INNER JOIN access AS a ON a.group_id = g.id").
 		Where("status = ?", models.GroupStatusActive).
 		Where("a.user_id = ?", authJwtClaims.ID).
 		OrderExpr("id")

@@ -9,6 +9,7 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
+	"github.com/uptrace/bun/extra/bundebug"
 	"github.com/urfave/cli/v2"
 )
 
@@ -25,5 +26,8 @@ func Before(c *cli.Context) error {
 	}
 	logrus.SetLevel(config.Config.LogLevel)
 	models.DB = bun.NewDB(sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(c.String("dsnDb")))), pgdialect.New())
+	if config.Config.Debug {
+		models.DB.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
+	}
 	return nil
 }
