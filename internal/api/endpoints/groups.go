@@ -31,6 +31,8 @@ func GroupsList(c echo.Context) (err error) {
 	query := models.DB.NewSelect().Model(&groups).
 		ColumnExpr("g.*").
 		Relation("Projects").
+		Relation("Members").
+		Relation("Members.User").
 		Join("INNER JOIN access AS a ON a.group_id = g.id").
 		Where("status = ?", models.GroupStatusActive).
 		Where("a.user_id = ?", authJwtClaims.ID).
@@ -42,7 +44,7 @@ func GroupsList(c echo.Context) (err error) {
 	// @FIXME convert nil -> [] in projects
 	for i := range groups {
 		if groups[i].Projects == nil {
-			groups[i].Projects = make([]models.Project, 0)
+			groups[i].Projects = make([]*models.Project, 0)
 		}
 	}
 
@@ -76,16 +78,29 @@ func GroupsCreate(c echo.Context) (err error) {
 		return err
 	}
 	group.Status = models.GroupStatusActive
-	group.Projects = make([]models.Project, 0)
+	group.Projects = make([]*models.Project, 0)
 
 	// Create group + access in tx
 	if err := models.DB.RunInTx(ctx, &sql.TxOptions{}, func(ctx context.Context, tx bun.Tx) error {
 		if _, err := tx.NewInsert().Model(&group).Exec(ctx); err != nil {
 			return fmt.Errorf("insert group error: %v", err)
 		}
-		access.GroupID = &group.ID
-		if _, err := tx.NewInsert().Model(&access).Exec(ctx); err != nil {
-			return fmt.Errorf("insert access error: %v", err)
+		access.GroupID = group.ID
+		members := make([]models.Access, 0)
+		members = append(members, access)
+
+		if group.Members != nil {
+			for _, member := range group.Members {
+				members = append(members, models.Access{
+					GroupID: group.ID,
+					UserID:  member.UserID,
+					Role:    member.Role,
+				})
+			}
+		}
+
+		if _, err := tx.NewInsert().Model(&members).Exec(ctx); err != nil {
+			return fmt.Errorf("insert members error: %v", err)
 		}
 		return nil
 	}); err != nil {
@@ -119,6 +134,8 @@ func GroupsRetrieve(c echo.Context) error {
 	query := models.DB.NewSelect().Model(&group).
 		ColumnExpr("g.*").
 		Relation("Projects").
+		Relation("Members").
+		Relation("Members.User").
 		Join("INNER JOIN access AS a ON a.group_id = g.id").
 		Where("status = ?", models.GroupStatusActive).
 		Where("a.user_id = ?", authJwtClaims.ID)
@@ -128,7 +145,7 @@ func GroupsRetrieve(c echo.Context) error {
 
 	// @FIXME replace nil -> [] in projects
 	if group.Projects == nil {
-		group.Projects = make([]models.Project, 0)
+		group.Projects = make([]*models.Project, 0)
 	}
 
 	return c.JSON(http.StatusOK, group)

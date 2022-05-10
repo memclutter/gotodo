@@ -7,9 +7,11 @@ type Access struct {
 
 	ID        int64  `bun:"id,pk,autoincrement" json:"id"`
 	UserID    int64  `json:"userId"`
-	GroupID   *int64 `json:"groupId"`
-	ProjectID *int64 `json:"projectId"`
+	GroupID   int64  `bun:",nullzero" json:"groupId"`
+	ProjectID int64  `bun:",nullzero" json:"projectId"`
 	Role      string `json:"role"`
+
+	User User `bun:"rel:belongs-to,join:user_id=id" json:"user"`
 }
 
 //goland:noinspection GoUnusedConst
