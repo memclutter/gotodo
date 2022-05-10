@@ -1,6 +1,13 @@
 package endpoints
 
-import "github.com/labstack/echo/v4"
+import (
+	"fmt"
+	"github.com/labstack/echo/v4"
+	"github.com/memclutter/gotodo/internal/api/helpers"
+	"github.com/memclutter/gotodo/internal/api/schemas"
+	"github.com/memclutter/gotodo/internal/models"
+	"net/http"
+)
 
 // GroupsList godoc
 //
@@ -12,8 +19,25 @@ import "github.com/labstack/echo/v4"
 // @Success			200				{array}		schemas.GroupsListResponse
 // @Failure			500				{object} 	schemas.Error		true	"Server error"
 // @Security		ApiHeaderAuth
-func GroupsList(c echo.Context) error {
-	return nil
+func GroupsList(c echo.Context) (err error) {
+	ctx := c.Request().Context()
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
+	totalCount := 0
+	groups := make([]models.Group, 0)
+	query := models.DB.NewSelect().Model(&groups).
+		ColumnExpr("groups.*").
+		Relation("Projects").
+		Join("INNER JOIN access AS a ON a.group_id = group.id").
+		Where("status = ?", models.GroupStatusActive).
+		Where("a.user_id = ?", authJwtClaims.ID).
+		OrderExpr("id")
+	if totalCount, err = query.ScanAndCount(ctx); err != nil {
+		return fmt.Errorf("tasks get error: %v", err)
+	}
+	return c.JSON(http.StatusOK, schemas.GroupsListResponse{
+		TotalCount: totalCount,
+		Items:      groups,
+	})
 }
 
 // GroupsCreate godoc

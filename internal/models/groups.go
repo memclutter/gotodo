@@ -8,6 +8,8 @@ type Group struct {
 	ID     int64  `bun:"id,pk,autoincrement" json:"id"`
 	Name   string `json:"name" validate:"required"`
 	Status string `bun:",type:group_status" json:"status"`
+
+	Projects []Project `bun:"rel:has-many,join:id=group_id" json:"projects"`
 }
 
 //goland:noinspection GoUnusedConst

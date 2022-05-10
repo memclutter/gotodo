@@ -782,6 +782,32 @@ const docTemplate_api = `{
                 "name": {
                     "type": "string"
                 },
+                "projects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Project"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Project": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "$ref": "#/definitions/models.Group"
+                },
+                "groupId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
                 "status": {
                     "type": "string"
                 }

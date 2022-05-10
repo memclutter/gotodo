@@ -6,10 +6,27 @@ definitions:
         type: integer
       name:
         type: string
+      projects:
+        items:
+          $ref: '#/definitions/models.Project'
+        type: array
       status:
         type: string
     required:
     - name
+    type: object
+  models.Project:
+    properties:
+      group:
+        $ref: '#/definitions/models.Group'
+      groupId:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      status:
+        type: string
     type: object
   models.ProjectStatus:
     properties:
