@@ -72,6 +72,15 @@ func RunServer() error {
 		groups.DELETE("/:id/", endpoints.GroupsDelete)
 	}
 
+	projects := e.Group("/projects", authMiddleware)
+	{
+		projects.GET("/", endpoints.ProjectsList)
+		projects.POST("/", endpoints.ProjectsCreate)
+		projects.GET("/:id/", endpoints.ProjectsRetrieve)
+		projects.PUT("/:id/", endpoints.ProjectsUpdate)
+		projects.DELETE("/:id/", endpoints.ProjectsDelete)
+	}
+
 	profile := e.Group("/profile", authMiddleware)
 	{
 		profile.GET("/", endpoints.ProfileRetrieve)
