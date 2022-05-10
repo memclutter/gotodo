@@ -51,9 +51,9 @@ CREATE TABLE IF NOT EXISTS projects
 CREATE TABLE IF NOT EXISTS access
 (
     id         BIGSERIAL,
-    user_id    BIGINT NOT NULL,
-    group_id   BIGINT,
-    project_id BIGINT,
+    user_id    BIGINT,
+    group_id   BIGINT      DEFAULT NULL,
+    project_id BIGINT      DEFAULT NULL,
     role       access_role DEFAULT 'member',
     PRIMARY KEY (id)
 );

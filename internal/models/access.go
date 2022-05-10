@@ -7,8 +7,8 @@ type Access struct {
 
 	ID        int64  `bun:"id,pk,autoincrement" json:"id"`
 	UserID    int64  `json:"userId"`
-	GroupID   int64  `json:"groupId"`
-	ProjectID int64  `json:"projectId"`
+	GroupID   *int64 `json:"groupId"`
+	ProjectID *int64 `json:"projectId"`
 	Role      string `json:"role"`
 }
 

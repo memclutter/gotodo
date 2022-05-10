@@ -1,11 +1,14 @@
 package endpoints
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/memclutter/gotodo/internal/api/helpers"
 	"github.com/memclutter/gotodo/internal/api/schemas"
 	"github.com/memclutter/gotodo/internal/models"
+	"github.com/uptrace/bun"
 	"net/http"
 )
 
@@ -32,8 +35,16 @@ func GroupsList(c echo.Context) (err error) {
 		Where("a.user_id = ?", authJwtClaims.ID).
 		OrderExpr("id")
 	if totalCount, err = query.ScanAndCount(ctx); err != nil {
-		return fmt.Errorf("tasks get error: %v", err)
+		return fmt.Errorf("groups get error: %v", err)
 	}
+
+	// @FIXME convert nil -> [] in projects
+	for i := range groups {
+		if groups[i].Projects == nil {
+			groups[i].Projects = make([]models.Project, 0)
+		}
+	}
+
 	return c.JSON(http.StatusOK, schemas.GroupsListResponse{
 		TotalCount: totalCount,
 		Items:      groups,
@@ -53,8 +64,34 @@ func GroupsList(c echo.Context) (err error) {
 // @Failure			400				{object}	schemas.Error		true	"Validation error"
 // @Failure			500				{object} 	schemas.Error		true	"Server error"
 // @Security		ApiHeaderAuth
-func GroupsCreate(c echo.Context) error {
-	return nil
+func GroupsCreate(c echo.Context) (err error) {
+	ctx := c.Request().Context()
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
+	group := models.Group{}
+	access := models.Access{UserID: authJwtClaims.ID, Role: models.AccessRoleAdmin}
+	if err = c.Bind(&group); err != nil {
+		return err
+	} else if err = c.Validate(&group); err != nil {
+		return err
+	}
+	group.Status = models.GroupStatusActive
+	group.Projects = make([]models.Project, 0)
+
+	// Create group + access in tx
+	if err := models.DB.RunInTx(ctx, &sql.TxOptions{}, func(ctx context.Context, tx bun.Tx) error {
+		if _, err := tx.NewInsert().Model(&group).Exec(ctx); err != nil {
+			return fmt.Errorf("insert group error: %v", err)
+		}
+		access.GroupID = &group.ID
+		if _, err := tx.NewInsert().Model(&access).Exec(ctx); err != nil {
+			return fmt.Errorf("insert access error: %v", err)
+		}
+		return nil
+	}); err != nil {
+		return fmt.Errorf("group create error: %v", err)
+	}
+
+	return c.JSON(http.StatusCreated, group)
 }
 
 // GroupsRetrieve godoc
