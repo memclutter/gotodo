@@ -25,10 +25,13 @@ import (
 // @name Authorization
 //
 // @tag.name auth
-// @tag.description Auth endpoints
+// @tag.description Auth endpoint
 //
 // @tag.name groups
-// @tag.description Groups endpoints
+// @tag.description Groups endpoint
+//
+// @tag.name projects
+// @tag.description Projects endpoint
 //
 // @tag.name tasks
 // @tag.description Tasks endpoint

@@ -542,6 +542,49 @@ const docTemplate_api = `{
                 }
             }
         },
+        "/projects/": {
+            "get": {
+                "security": [
+                    {
+                        "ApiHeaderAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "List",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "groupID",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schemas.ProjectsListResponse"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/tasks/": {
             "get": {
                 "security": [
@@ -770,6 +813,29 @@ const docTemplate_api = `{
         }
     },
     "definitions": {
+        "models.Access": {
+            "type": "object",
+            "properties": {
+                "groupId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "projectId": {
+                    "type": "integer"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.Group": {
             "type": "object",
             "required": [
@@ -778,6 +844,12 @@ const docTemplate_api = `{
             "properties": {
                 "id": {
                     "type": "integer"
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Access"
+                    }
                 },
                 "name": {
                     "type": "string"
@@ -1028,6 +1100,20 @@ const docTemplate_api = `{
                 }
             }
         },
+        "schemas.ProjectsListResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Project"
+                    }
+                },
+                "totalCount": {
+                    "type": "integer"
+                }
+            }
+        },
         "schemas.TasksListResponse": {
             "type": "object",
             "properties": {
@@ -1052,12 +1138,16 @@ const docTemplate_api = `{
     },
     "tags": [
         {
-            "description": "Auth endpoints",
+            "description": "Auth endpoint",
             "name": "auth"
         },
         {
-            "description": "Groups endpoints",
+            "description": "Groups endpoint",
             "name": "groups"
+        },
+        {
+            "description": "Projects endpoint",
+            "name": "projects"
         },
         {
             "description": "Tasks endpoint",

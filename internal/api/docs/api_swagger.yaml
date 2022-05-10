@@ -1,9 +1,28 @@
 basePath: /api/
 definitions:
+  models.Access:
+    properties:
+      groupId:
+        type: integer
+      id:
+        type: integer
+      projectId:
+        type: integer
+      role:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userId:
+        type: integer
+    type: object
   models.Group:
     properties:
       id:
         type: integer
+      members:
+        items:
+          $ref: '#/definitions/models.Access'
+        type: array
       name:
         type: string
       projects:
@@ -169,6 +188,15 @@ definitions:
     required:
     - firstName
     - lastName
+    type: object
+  schemas.ProjectsListResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/models.Project'
+        type: array
+      totalCount:
+        type: integer
     type: object
   schemas.TasksListResponse:
     properties:
@@ -520,6 +548,32 @@ paths:
       summary: Password Update
       tags:
       - profile
+  /projects/:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: groupID
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schemas.ProjectsListResponse'
+            type: array
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: List
+      tags:
+      - projects
   /tasks/:
     get:
       consumes:
@@ -670,10 +724,12 @@ securityDefinitions:
     type: apiKey
 swagger: "2.0"
 tags:
-- description: Auth endpoints
+- description: Auth endpoint
   name: auth
-- description: Groups endpoints
+- description: Groups endpoint
   name: groups
+- description: Projects endpoint
+  name: projects
 - description: Tasks endpoint
   name: tasks
 - description: Profile endpoint
