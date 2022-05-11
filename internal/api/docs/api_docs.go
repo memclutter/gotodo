@@ -877,6 +877,12 @@ const docTemplate_api = `{
                 "id": {
                     "type": "integer"
                 },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Access"
+                    }
+                },
                 "name": {
                     "type": "string"
                 },

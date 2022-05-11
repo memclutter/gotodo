@@ -42,6 +42,10 @@ definitions:
         type: integer
       id:
         type: integer
+      members:
+        items:
+          $ref: '#/definitions/models.Access'
+        type: array
       name:
         type: string
       status:
