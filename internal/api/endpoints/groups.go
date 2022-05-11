@@ -168,7 +168,49 @@ func GroupsRetrieve(c echo.Context) error {
 // @Failure			500				{object}	schemas.Error					true	"Server error"
 // @Security		ApiHeaderAuth
 func GroupsUpdate(c echo.Context) error {
-	return nil
+	ctx := c.Request().Context()
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "group not found")
+	}
+	group := models.Group{ID: id}
+	query := models.DB.NewSelect().Model(&group).
+		ColumnExpr("g.*").
+		Relation("Projects").
+		Relation("Members").
+		Relation("Members.User").
+		Join("INNER JOIN access AS a ON a.group_id = g.id").
+		Where("status = ?", models.GroupStatusActive).
+		Where("a.user_id = ?", authJwtClaims.ID).
+		Where("a.role = ?", models.AccessRoleAdmin)
+	if err := query.Scan(ctx); err == sql.ErrNoRows {
+		return c.NoContent(http.StatusNotFound)
+	} else if err != nil {
+		return fmt.Errorf("group retrieve error: %v", err)
+	}
+
+	// Parse request and update model
+	req := models.Group{}
+	if err = c.Bind(&req); err != nil {
+		return err
+	} else if err = c.Validate(&req); err != nil {
+		return err
+	}
+	group.Name = req.Name
+
+	// Create group + access in tx
+	if err := models.DB.RunInTx(ctx, &sql.TxOptions{}, func(ctx context.Context, tx bun.Tx) error {
+		if _, err := tx.NewUpdate().Model(&group).Exec(ctx); err != nil {
+			return fmt.Errorf("update group error: %v", err)
+		}
+		// @TODO update members
+		return nil
+	}); err != nil {
+		return fmt.Errorf("group create error: %v", err)
+	}
+
+	return c.JSON(http.StatusOK, group)
 }
 
 // GroupsDelete godoc
