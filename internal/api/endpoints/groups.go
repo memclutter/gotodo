@@ -139,7 +139,9 @@ func GroupsRetrieve(c echo.Context) error {
 		Join("INNER JOIN access AS a ON a.group_id = g.id").
 		Where("status = ?", models.GroupStatusActive).
 		Where("a.user_id = ?", authJwtClaims.ID)
-	if err := query.Scan(ctx); err != nil {
+	if err := query.Scan(ctx); err == sql.ErrNoRows {
+		return c.NoContent(http.StatusNotFound)
+	} else if err != nil {
 		return fmt.Errorf("group retrieve error: %v", err)
 	}
 
@@ -183,5 +185,29 @@ func GroupsUpdate(c echo.Context) error {
 // @Failure			500				{object}	schemas.Error					true	"Server error"
 // @Security		ApiHeaderAuth
 func GroupsDelete(c echo.Context) error {
-	return nil
+	ctx := c.Request().Context()
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "group not found")
+	}
+	group := models.Group{ID: id}
+	query := models.DB.NewSelect().Model(&group).
+		Join("INNER JOIN access AS a ON a.group_id = g.id").
+		Where("status = ?", models.GroupStatusActive).
+		Where("a.user_id = ?", authJwtClaims.ID).
+		Where("a.role = ?", models.AccessRoleAdmin)
+	if err := query.Scan(ctx); err == sql.ErrNoRows {
+		return c.NoContent(http.StatusNotFound)
+	} else if err != nil {
+		return fmt.Errorf("group retrieve error: %v", err)
+	}
+
+	// Soft delete
+	group.Status = models.GroupStatusDeleted
+	if _, err := models.DB.NewUpdate().Model(&group).WherePK().Exec(ctx); err != nil {
+		return fmt.Errorf("group delete error: %v", err)
+	}
+
+	return c.NoContent(http.StatusNoContent)
 }
