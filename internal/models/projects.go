@@ -10,8 +10,9 @@ type Project struct {
 	Name    string `json:"name" validate:"required"`
 	Status  string `bun:",type:project_status" json:"status"`
 
-	Group   Group     `bun:"rel:belongs-to,join:group_id=id" json:"group" validate:"-"`
-	Members []*Access `bun:"rel:has-many,join:id=project_id" json:"members"`
+	Group    Group           `bun:"rel:belongs-to,join:group_id=id" json:"group" validate:"-"`
+	Members  []*Access       `bun:"rel:has-many,join:id=project_id" json:"members"`
+	Statuses []ProjectStatus `bun:"rel:has-many,join:id=project_id" json:"statuses" validate:"-"`
 }
 
 //goland:noinspection GoUnusedConst

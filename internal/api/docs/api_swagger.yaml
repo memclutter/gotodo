@@ -50,6 +50,12 @@ definitions:
         type: string
       status:
         type: string
+      statuses:
+        items:
+          $ref: '#/definitions/models.ProjectStatus'
+        type: array
+    required:
+    - name
     type: object
   models.ProjectStatus:
     properties:
@@ -607,6 +613,97 @@ paths:
       security:
       - ApiHeaderAuth: []
       summary: Create
+      tags:
+      - projects
+  /projects/{id}/:
+    delete:
+      consumes:
+      - application/json
+      description: Delete project
+      parameters:
+      - description: Group identifier
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: ""
+        "404":
+          description: ""
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: Delete
+      tags:
+      - projects
+    get:
+      consumes:
+      - application/json
+      description: Get project detail
+      parameters:
+      - description: Group identifier
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Project'
+        "404":
+          description: ""
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: Retrieve
+      tags:
+      - projects
+    put:
+      consumes:
+      - application/json
+      description: Update project
+      parameters:
+      - description: Group identifier
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Project'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Project'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: Update
       tags:
       - projects
   /tasks/:

@@ -36,6 +36,7 @@ func ProjectsList(c echo.Context) (err error) {
 		ColumnExpr("p.*").
 		Relation("Members").
 		Relation("Members.User").
+		Relation("Statuses").
 		Join("LEFT JOIN access AS pa ON pa.project_id = p.id").
 		Join("LEFT JOIN access AS ga ON ga.group_id = p.group_id").
 		Where("status = ?", models.ProjectStatusActive).
@@ -118,14 +119,54 @@ func ProjectsCreate(c echo.Context) (err error) {
 	return c.JSON(http.StatusCreated, project)
 }
 
+// ProjectsRetrieve godoc
+//
+// @Router 			/projects/{id}/	[get]
+// @Summary			Retrieve
+// @Description		Get project detail
+// @Tags			projects
+// @Accept			json
+// @Produce 		json
+// @Param			id				path		integer							true	"Group identifier"
+// @Success			200				{object}	models.Project
+// @Failure			404
+// @Failure			500				{object}	schemas.Error					true	"Server error"
+// @Security		ApiHeaderAuth
 func ProjectsRetrieve(c echo.Context) error {
 	return nil
 }
 
+// ProjectsUpdate godoc
+//
+// @Router			/projects/{id}/	[put]
+// @Summary			Update
+// @Description		Update project
+// @Tags			projects
+// @Accept			json
+// @Produce			json
+// @Param			id				path		integer							true	"Group identifier"
+// @Param			request			body		models.Project					true	"Request body"
+// @Success			200				{object}	models.Project
+// @Failure			400				{object}	schemas.Error					true	"Validation error"
+// @Failure			500				{object}	schemas.Error					true	"Server error"
+// @Security		ApiHeaderAuth
 func ProjectsUpdate(c echo.Context) error {
 	return nil
 }
 
+// ProjectsDelete godoc
+//
+// @Router			/projects/{id}/	[delete]
+// @Summary			Delete
+// @Description		Delete project
+// @Tags			projects
+// @Accept			json
+// @Produce			json
+// @Param			id				path		integer							true	"Group identifier"
+// @Success			204
+// @Failure			404
+// @Failure			500				{object}	schemas.Error					true	"Server error"
+// @Security		ApiHeaderAuth
 func ProjectsDelete(c echo.Context) error {
 	return nil
 }
