@@ -1,6 +1,10 @@
 package models
 
-import "github.com/uptrace/bun"
+import (
+	"errors"
+	"github.com/memclutter/gocore/pkg/coreslices"
+	"github.com/uptrace/bun"
+)
 
 type Group struct {
 	bun.BaseModel `bun:"table:groups,alias:g"`
@@ -19,3 +23,15 @@ const (
 	GroupStatusArchive = "archive"
 	GroupStatusDeleted = "delete"
 )
+
+func (g Group) Can(userID int64, roles []string) (bool, error) {
+	if g.Members == nil {
+		return false, errors.New("check group access error: nil members")
+	}
+	for _, member := range g.Members {
+		if member.UserID == userID && (len(roles) == 0 || coreslices.StringIn(member.Role, roles)) {
+			return true, nil
+		}
+	}
+	return false, nil
+}

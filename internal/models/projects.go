@@ -7,10 +7,10 @@ type Project struct {
 
 	ID      int64  `bun:"id,pk,autoincrement" json:"id"`
 	GroupID int64  `json:"groupId"`
-	Name    string `json:"name"`
+	Name    string `json:"name" validate:"required"`
 	Status  string `bun:",type:project_status" json:"status"`
 
-	Group   Group     `bun:"rel:belongs-to,join:group_id=id" json:"group"`
+	Group   Group     `bun:"rel:belongs-to,join:group_id=id" json:"group" validate:"-"`
 	Members []*Access `bun:"rel:has-many,join:id=project_id" json:"members"`
 }
 
