@@ -26,8 +26,13 @@ func Before(c *cli.Context) error {
 	}
 	logrus.SetLevel(config.Config.LogLevel)
 	models.DB = bun.NewDB(sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(c.String("dsnDb")))), pgdialect.New())
+
+	// For debug mode, enable sql queries log and debug log level
 	if config.Config.Debug {
 		models.DB.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
+		if config.Config.LogLevel < logrus.DebugLevel {
+			logrus.SetLevel(logrus.DebugLevel)
+		}
 	}
 	return nil
 }
