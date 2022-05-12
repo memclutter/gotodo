@@ -253,7 +253,7 @@ const docTemplate_api = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schemas.GroupsCreateRequest"
+                            "$ref": "#/definitions/schemas.GroupsRequest"
                         }
                     }
                 ],
@@ -355,7 +355,7 @@ const docTemplate_api = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Group"
+                            "$ref": "#/definitions/schemas.GroupsRequest"
                         }
                     }
                 ],
@@ -1283,20 +1283,6 @@ const docTemplate_api = `{
                 "validationErrors": {}
             }
         },
-        "schemas.GroupsCreateRequest": {
-            "type": "object",
-            "properties": {
-                "members": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/schemas.AccessMember"
-                    }
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
         "schemas.GroupsListResponse": {
             "type": "object",
             "properties": {
@@ -1308,6 +1294,20 @@ const docTemplate_api = `{
                 },
                 "totalCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "schemas.GroupsRequest": {
+            "type": "object",
+            "properties": {
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schemas.AccessMember"
+                    }
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },

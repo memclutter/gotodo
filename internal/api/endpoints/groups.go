@@ -62,7 +62,7 @@ func GroupsList(c echo.Context) (err error) {
 // @Tags 			groups
 // @Accept			json
 // @Produce			json
-// @Param			request			body		schemas.GroupsCreateRequest		true	"Request body"
+// @Param			request			body		schemas.GroupsRequest		true	"Request body"
 // @Success			200				{object}	models.Group
 // @Failure			400				{object}	schemas.Error					true	"Validation error"
 // @Failure			500				{object} 	schemas.Error					true	"Server error"
@@ -70,7 +70,7 @@ func GroupsList(c echo.Context) (err error) {
 func GroupsCreate(c echo.Context) (err error) {
 	ctx := c.Request().Context()
 	authJwtClaims := helpers.GetAuthJwtClaims(c)
-	req := schemas.GroupsCreateRequest{}
+	req := schemas.GroupsRequest{}
 	if err = c.Bind(&req); err != nil {
 		return err
 	} else if err = c.Validate(&req); err != nil {
@@ -168,7 +168,7 @@ func GroupsRetrieve(c echo.Context) error {
 // @Accept			json
 // @Produce			json
 // @Param			id				path		integer							true	"Group identifier"
-// @Param			request			body		models.Group					true	"Request body"
+// @Param			request			body		schemas.GroupsRequest			true	"Request body"
 // @Success			200				{object}	models.Group
 // @Failure			400				{object}	schemas.Error					true	"Validation error"
 // @Failure			500				{object}	schemas.Error					true	"Server error"
@@ -197,12 +197,13 @@ func GroupsUpdate(c echo.Context) error {
 	}
 
 	// Parse request and update model
-	req := models.Group{}
+	req := schemas.GroupsRequest{}
 	if err = c.Bind(&req); err != nil {
 		return err
 	} else if err = c.Validate(&req); err != nil {
 		return err
 	}
+
 	group.Name = req.Name
 
 	// Create group + access in tx

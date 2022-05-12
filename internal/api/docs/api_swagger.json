@@ -246,7 +246,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schemas.GroupsCreateRequest"
+                            "$ref": "#/definitions/schemas.GroupsRequest"
                         }
                     }
                 ],
@@ -348,7 +348,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Group"
+                            "$ref": "#/definitions/schemas.GroupsRequest"
                         }
                     }
                 ],
@@ -1276,20 +1276,6 @@
                 "validationErrors": {}
             }
         },
-        "schemas.GroupsCreateRequest": {
-            "type": "object",
-            "properties": {
-                "members": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/schemas.AccessMember"
-                    }
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
         "schemas.GroupsListResponse": {
             "type": "object",
             "properties": {
@@ -1301,6 +1287,20 @@
                 },
                 "totalCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "schemas.GroupsRequest": {
+            "type": "object",
+            "properties": {
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schemas.AccessMember"
+                    }
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },

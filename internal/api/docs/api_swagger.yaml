@@ -179,15 +179,6 @@ definitions:
       message: {}
       validationErrors: {}
     type: object
-  schemas.GroupsCreateRequest:
-    properties:
-      members:
-        items:
-          $ref: '#/definitions/schemas.AccessMember'
-        type: array
-      name:
-        type: string
-    type: object
   schemas.GroupsListResponse:
     properties:
       items:
@@ -196,6 +187,15 @@ definitions:
         type: array
       totalCount:
         type: integer
+    type: object
+  schemas.GroupsRequest:
+    properties:
+      members:
+        items:
+          $ref: '#/definitions/schemas.AccessMember'
+        type: array
+      name:
+        type: string
     type: object
   schemas.ProfilePasswordUpdate:
     properties:
@@ -390,7 +390,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/schemas.GroupsCreateRequest'
+          $ref: '#/definitions/schemas.GroupsRequest'
       produces:
       - application/json
       responses:
@@ -481,7 +481,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.Group'
+          $ref: '#/definitions/schemas.GroupsRequest'
       produces:
       - application/json
       responses:
