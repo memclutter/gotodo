@@ -244,5 +244,40 @@ func ProjectsUpdate(c echo.Context) (err error) {
 // @Failure			500				{object}	schemas.Error					true	"Server error"
 // @Security		ApiHeaderAuth
 func ProjectsDelete(c echo.Context) error {
-	return nil
+	ctx := c.Request().Context()
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "group not found")
+	}
+	project := models.Project{ID: id}
+	query := models.DB.NewSelect().Model(&project).
+		ColumnExpr("p.*").
+		Relation("Group").
+		Relation("Members").
+		Relation("Members.User").
+		Join("LEFT JOIN access AS pa ON pa.project_id = p.id").
+		Join("LEFT JOIN access AS ga ON ga.group_id = p.group_id").
+		WherePK().
+		Where("status = ?", models.ProjectStatusActive).
+		Where(
+			"(pa.user_id = ? AND pa.role = ?) OR (ga.user_id = ? AND ga.role = ?)",
+			authJwtClaims.ID,
+			models.AccessRoleAdmin,
+			authJwtClaims.ID,
+			models.AccessRoleAdmin,
+		)
+	if err := query.Scan(ctx); err == sql.ErrNoRows {
+		return c.NoContent(http.StatusNotFound)
+	} else if err != nil {
+		return fmt.Errorf("group retrieve error: %v", err)
+	}
+
+	// Soft delete
+	project.Status = models.ProjectStatusDelete
+	if _, err := models.DB.NewUpdate().Model(&project).WherePK().Exec(ctx); err != nil {
+		return fmt.Errorf("project delete error: %v", err)
+	}
+
+	return c.NoContent(http.StatusNoContent)
 }
