@@ -175,8 +175,59 @@ func ProjectsRetrieve(c echo.Context) error {
 // @Failure			400				{object}	schemas.Error					true	"Validation error"
 // @Failure			500				{object}	schemas.Error					true	"Server error"
 // @Security		ApiHeaderAuth
-func ProjectsUpdate(c echo.Context) error {
-	return nil
+func ProjectsUpdate(c echo.Context) (err error) {
+	ctx := c.Request().Context()
+	authJwtClaims := helpers.GetAuthJwtClaims(c)
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "group not found")
+	}
+	project := models.Project{ID: id}
+	query := models.DB.NewSelect().Model(&project).
+		ColumnExpr("p.*").
+		Relation("Group").
+		Relation("Group.Members").
+		Relation("Members").
+		Relation("Members.User").
+		Join("LEFT JOIN access AS pa ON pa.project_id = p.id").
+		Join("LEFT JOIN access AS ga ON ga.group_id = p.group_id").
+		WherePK().
+		Where("status = ?", models.ProjectStatusActive).
+		Where("pa.user_id = ? OR ga.user_id = ?", authJwtClaims.ID, authJwtClaims.ID)
+	if err := query.Scan(ctx); err == sql.ErrNoRows {
+		return c.NoContent(http.StatusNotFound)
+	} else if err != nil {
+		return fmt.Errorf("group retrieve error: %v", err)
+	}
+
+	// Parse request and update model
+	req := models.Project{}
+	if err = c.Bind(&req); err != nil {
+		return err
+	} else if err = c.Validate(&req); err != nil {
+		return err
+	}
+	project.Name = req.Name
+
+	// Check group access
+	if can, err := project.Group.Can(authJwtClaims.ID, []string{}); err != nil {
+		return fmt.Errorf("check project group access error: %v", err)
+	} else if !can {
+		return c.NoContent(http.StatusForbidden)
+	}
+
+	// Create project + access in tx
+	if err := models.DB.RunInTx(ctx, &sql.TxOptions{}, func(ctx context.Context, tx bun.Tx) error {
+		if _, err := tx.NewInsert().Model(&project).Exec(ctx); err != nil {
+			return fmt.Errorf("insert project error: %v", err)
+		}
+		// @TODO update members
+		return nil
+	}); err != nil {
+		return fmt.Errorf("project create error: %v", err)
+	}
+
+	return c.JSON(http.StatusCreated, project)
 }
 
 // ProjectsDelete godoc
