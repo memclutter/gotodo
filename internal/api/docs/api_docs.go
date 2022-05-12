@@ -253,7 +253,7 @@ const docTemplate_api = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Group"
+                            "$ref": "#/definitions/schemas.GroupsCreateRequest"
                         }
                     }
                 ],
@@ -1015,15 +1015,6 @@ const docTemplate_api = `{
         "models.Access": {
             "type": "object",
             "properties": {
-                "groupId": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "projectId": {
-                    "type": "integer"
-                },
                 "role": {
                     "type": "string"
                 },
@@ -1181,6 +1172,22 @@ const docTemplate_api = `{
                 }
             }
         },
+        "schemas.AccessMember": {
+            "type": "object",
+            "properties": {
+                "role": {
+                    "type": "string",
+                    "enum": [
+                        "admin",
+                        "member"
+                    ]
+                },
+                "userId": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
         "schemas.AuthConfirmation": {
             "type": "object",
             "required": [
@@ -1274,6 +1281,20 @@ const docTemplate_api = `{
             "properties": {
                 "message": {},
                 "validationErrors": {}
+            }
+        },
+        "schemas.GroupsCreateRequest": {
+            "type": "object",
+            "properties": {
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schemas.AccessMember"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
             }
         },
         "schemas.GroupsListResponse": {

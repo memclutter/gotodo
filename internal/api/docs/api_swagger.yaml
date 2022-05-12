@@ -2,12 +2,6 @@ basePath: /api/
 definitions:
   models.Access:
     properties:
-      groupId:
-        type: integer
-      id:
-        type: integer
-      projectId:
-        type: integer
       role:
         type: string
       user:
@@ -111,6 +105,17 @@ definitions:
       status:
         type: string
     type: object
+  schemas.AccessMember:
+    properties:
+      role:
+        enum:
+        - admin
+        - member
+        type: string
+      userId:
+        example: 1
+        type: integer
+    type: object
   schemas.AuthConfirmation:
     properties:
       token:
@@ -173,6 +178,15 @@ definitions:
     properties:
       message: {}
       validationErrors: {}
+    type: object
+  schemas.GroupsCreateRequest:
+    properties:
+      members:
+        items:
+          $ref: '#/definitions/schemas.AccessMember'
+        type: array
+      name:
+        type: string
     type: object
   schemas.GroupsListResponse:
     properties:
@@ -376,7 +390,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.Group'
+          $ref: '#/definitions/schemas.GroupsCreateRequest'
       produces:
       - application/json
       responses:

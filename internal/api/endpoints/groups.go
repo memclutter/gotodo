@@ -62,36 +62,42 @@ func GroupsList(c echo.Context) (err error) {
 // @Tags 			groups
 // @Accept			json
 // @Produce			json
-// @Param			request			body		models.Group		true	"Request body"
+// @Param			request			body		schemas.GroupsCreateRequest		true	"Request body"
 // @Success			200				{object}	models.Group
-// @Failure			400				{object}	schemas.Error		true	"Validation error"
-// @Failure			500				{object} 	schemas.Error		true	"Server error"
+// @Failure			400				{object}	schemas.Error					true	"Validation error"
+// @Failure			500				{object} 	schemas.Error					true	"Server error"
 // @Security		ApiHeaderAuth
 func GroupsCreate(c echo.Context) (err error) {
 	ctx := c.Request().Context()
 	authJwtClaims := helpers.GetAuthJwtClaims(c)
-	group := models.Group{}
-	access := models.Access{UserID: authJwtClaims.ID, Role: models.AccessRoleAdmin}
-	if err = c.Bind(&group); err != nil {
+	req := schemas.GroupsCreateRequest{}
+	if err = c.Bind(&req); err != nil {
 		return err
-	} else if err = c.Validate(&group); err != nil {
+	} else if err = c.Validate(&req); err != nil {
 		return err
 	}
-	group.Status = models.GroupStatusActive
-	group.Projects = make([]*models.Project, 0)
+
+	group := models.Group{
+		Name:     req.Name,
+		Status:   models.GroupStatusActive,
+		Projects: make([]*models.Project, 0),
+		Members:  make([]*models.Access, 0),
+	}
 
 	// Create group + access in tx
 	if err := models.DB.RunInTx(ctx, &sql.TxOptions{}, func(ctx context.Context, tx bun.Tx) error {
 		if _, err := tx.NewInsert().Model(&group).Exec(ctx); err != nil {
 			return fmt.Errorf("insert group error: %v", err)
 		}
-		access.GroupID = group.ID
-		members := make([]models.Access, 0)
-		members = append(members, access)
+		group.Members = append(group.Members, &models.Access{
+			UserID:  authJwtClaims.ID,
+			GroupID: group.ID,
+			Role:    models.AccessRoleAdmin,
+		})
 
-		if group.Members != nil {
-			for _, member := range group.Members {
-				members = append(members, models.Access{
+		if req.Members != nil {
+			for _, member := range req.Members {
+				group.Members = append(group.Members, &models.Access{
 					GroupID: group.ID,
 					UserID:  member.UserID,
 					Role:    member.Role,
@@ -99,8 +105,8 @@ func GroupsCreate(c echo.Context) (err error) {
 			}
 		}
 
-		if _, err := tx.NewInsert().Model(&members).Exec(ctx); err != nil {
-			return fmt.Errorf("insert members error: %v", err)
+		if _, err := tx.NewInsert().Model(&group.Members).Exec(ctx); err != nil {
+			return fmt.Errorf("insert group members error: %v", err)
 		}
 		return nil
 	}); err != nil {
