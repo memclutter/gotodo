@@ -82,6 +82,10 @@ definitions:
         type: string
       id:
         type: integer
+      project:
+        $ref: '#/definitions/models.Project'
+      projectId:
+        type: integer
       status:
         type: string
       title:
@@ -711,6 +715,10 @@ paths:
       consumes:
       - application/json
       description: Get tasks list
+      parameters:
+      - in: query
+        name: projectID
+        type: integer
       produces:
       - application/json
       responses:

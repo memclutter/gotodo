@@ -795,6 +795,13 @@ const docTemplate_api = `{
                     "tasks"
                 ],
                 "summary": "List",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "projectID",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1132,6 +1139,12 @@ const docTemplate_api = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "integer"
+                },
+                "project": {
+                    "$ref": "#/definitions/models.Project"
+                },
+                "projectId": {
                     "type": "integer"
                 },
                 "status": {
