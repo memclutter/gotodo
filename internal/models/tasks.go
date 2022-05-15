@@ -16,9 +16,9 @@ type Task struct {
 	CustomStatusID int64     `json:"customStatusId"`
 	ProjectID      int64     `json:"projectId"`
 
-	Project      Project       `bun:"rel:belongs-to,join:project_id=id" json:"project"`
-	User         User          `bun:"rel:belongs-to,join:user_id=id" json:"user"`
-	CustomStatus ProjectStatus `bun:"rel:belongs-to,join:custom_status_id=id" json:"customStatus"`
+	Project      Project `bun:"rel:belongs-to,join:project_id=id" json:"project"`
+	User         User    `bun:"rel:belongs-to,join:user_id=id" json:"user"`
+	CustomStatus Status  `bun:"rel:belongs-to,join:custom_status_id=id" json:"customStatus"`
 }
 
 //goland:noinspection GoUnusedConst

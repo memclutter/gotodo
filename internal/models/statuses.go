@@ -2,8 +2,8 @@ package models
 
 import "github.com/uptrace/bun"
 
-type ProjectStatus struct {
-	bun.BaseModel `bun:"table:project_statuses,alias:ps"`
+type Status struct {
+	bun.BaseModel `bun:"table:statuses,alias:s"`
 
 	ID        int64  `bun:"id,pk,autoincrement" json:"id"`
 	ProjectID int64  `json:"projectId"`

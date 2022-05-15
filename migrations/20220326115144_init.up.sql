@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS access
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS project_statuses
+CREATE TABLE IF NOT EXISTS statuses
 (
     id         BIGSERIAL,
     project_id BIGINT       NOT NULL,
@@ -112,14 +112,14 @@ ALTER TABLE access
 ALTER TABLE access
     ADD CONSTRAINT fk_access_project_id FOREIGN KEY (project_id) REFERENCES projects (id)
         ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE project_statuses
-    ADD CONSTRAINT fk_project_statuses_project_id FOREIGN KEY (project_id) REFERENCES projects (id)
+ALTER TABLE statuses
+    ADD CONSTRAINT fk_statuses_project_id FOREIGN KEY (project_id) REFERENCES projects (id)
         ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE tasks
     ADD CONSTRAINT fk_tasks_project_id FOREIGN KEY (project_id) REFERENCES projects (id)
         ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE tasks
-    ADD CONSTRAINT fk_tasks_custom_status_id FOREIGN KEY (custom_status_id) REFERENCES project_statuses (id)
+    ADD CONSTRAINT fk_tasks_custom_status_id FOREIGN KEY (custom_status_id) REFERENCES statuses (id)
         ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE task_participants
     ADD CONSTRAINT fk_task_participants_task_id FOREIGN KEY (task_id) REFERENCES tasks (id)
