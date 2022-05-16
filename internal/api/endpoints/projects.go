@@ -62,22 +62,27 @@ func ProjectsList(c echo.Context) (err error) {
 // @Tags 			projects
 // @Accept			json
 // @Produce			json
-// @Param			request			body		models.Project		true	"Request body"
+// @Param			request			body		schemas.ProjectsRequest		true	"Request body"
 // @Success			200				{object}	models.Project
-// @Failure			400				{object}	schemas.Error		true	"Validation error"
-// @Failure			500				{object} 	schemas.Error		true	"Server error"
+// @Failure			400				{object}	schemas.Error				true	"Validation error"
+// @Failure			500				{object} 	schemas.Error				true	"Server error"
 // @Security		ApiHeaderAuth
 func ProjectsCreate(c echo.Context) (err error) {
 	ctx := c.Request().Context()
 	authJwtClaims := helpers.GetAuthJwtClaims(c)
-	project := models.Project{}
+	req := schemas.ProjectsRequest{}
 	access := models.Access{UserID: authJwtClaims.ID, Role: models.AccessRoleAdmin}
-	if err = c.Bind(&project); err != nil {
+	if err = c.Bind(&req); err != nil {
 		return err
-	} else if err = c.Validate(&project); err != nil {
+	} else if err = c.Validate(&req); err != nil {
 		return err
 	}
-	project.Status = models.GroupStatusActive
+	project := models.Project{
+		Name:    req.Name,
+		GroupID: req.GroupID,
+		Status:  models.GroupStatusActive,
+		Members: make([]*models.Access, 0),
+	}
 
 	// Check group access
 	group := models.Group{ID: project.GroupID}
@@ -96,12 +101,11 @@ func ProjectsCreate(c echo.Context) (err error) {
 			return fmt.Errorf("insert project error: %v", err)
 		}
 		access.ProjectID = project.ID
-		members := make([]*models.Access, 0)
-		members = append(members, &access)
+		project.Members = append(project.Members, &access)
 
-		if project.Members != nil {
-			for _, member := range project.Members {
-				members = append(members, &models.Access{
+		if req.Members != nil {
+			for _, member := range req.Members {
+				project.Members = append(project.Members, &models.Access{
 					ProjectID: project.ID,
 					UserID:    member.UserID,
 					Role:      member.Role,
@@ -109,10 +113,9 @@ func ProjectsCreate(c echo.Context) (err error) {
 			}
 		}
 
-		if _, err := tx.NewInsert().Model(&members).Exec(ctx); err != nil {
+		if _, err := tx.NewInsert().Model(&project.Members).Exec(ctx); err != nil {
 			return fmt.Errorf("insert members error: %v", err)
 		}
-		project.Members = members
 		return nil
 	}); err != nil {
 		return fmt.Errorf("project create error: %v", err)
@@ -170,7 +173,7 @@ func ProjectsRetrieve(c echo.Context) error {
 // @Accept			json
 // @Produce			json
 // @Param			id				path		integer							true	"Group identifier"
-// @Param			request			body		models.Project					true	"Request body"
+// @Param			request			body		schemas.ProjectsRequest			true	"Request body"
 // @Success			200				{object}	models.Project
 // @Failure			400				{object}	schemas.Error					true	"Validation error"
 // @Failure			500				{object}	schemas.Error					true	"Server error"
@@ -201,13 +204,14 @@ func ProjectsUpdate(c echo.Context) (err error) {
 	}
 
 	// Parse request and update model
-	req := models.Project{}
+	req := schemas.ProjectsRequest{}
 	if err = c.Bind(&req); err != nil {
 		return err
 	} else if err = c.Validate(&req); err != nil {
 		return err
 	}
 	project.Name = req.Name
+	project.GroupID = req.GroupID
 
 	// Check group access
 	if can, err := project.Group.Can(authJwtClaims.ID, []string{}); err != nil {

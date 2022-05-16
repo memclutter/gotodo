@@ -46,12 +46,12 @@ definitions:
         type: string
       statuses:
         items:
-          $ref: '#/definitions/models.ProjectStatus'
+          $ref: '#/definitions/models.Status'
         type: array
     required:
     - name
     type: object
-  models.ProjectStatus:
+  models.Status:
     properties:
       id:
         type: integer
@@ -67,7 +67,7 @@ definitions:
   models.Task:
     properties:
       customStatus:
-        $ref: '#/definitions/models.ProjectStatus'
+        $ref: '#/definitions/models.Status'
       customStatusId:
         type: integer
       dateCreated:
@@ -196,6 +196,8 @@ definitions:
         type: array
       name:
         type: string
+    required:
+    - name
     type: object
   schemas.ProfilePasswordUpdate:
     properties:
@@ -225,6 +227,20 @@ definitions:
         type: array
       totalCount:
         type: integer
+    type: object
+  schemas.ProjectsRequest:
+    properties:
+      groupId:
+        type: integer
+      members:
+        items:
+          $ref: '#/definitions/schemas.AccessMember'
+        type: array
+      name:
+        type: string
+    required:
+    - groupId
+    - name
     type: object
   schemas.TasksListResponse:
     properties:
@@ -612,7 +628,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.Project'
+          $ref: '#/definitions/schemas.ProjectsRequest'
       produces:
       - application/json
       responses:
@@ -703,7 +719,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.Project'
+          $ref: '#/definitions/schemas.ProjectsRequest'
       produces:
       - application/json
       responses:

@@ -8,6 +8,6 @@ type GroupsListResponse struct {
 }
 
 type GroupsRequest struct {
-	Name    string         `json:"name"`
+	Name    string         `json:"name" validate:"required"`
 	Members []AccessMember `json:"members"`
 }

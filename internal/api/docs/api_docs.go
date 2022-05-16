@@ -608,7 +608,7 @@ const docTemplate_api = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Project"
+                            "$ref": "#/definitions/schemas.ProjectsRequest"
                         }
                     }
                 ],
@@ -710,7 +710,7 @@ const docTemplate_api = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Project"
+                            "$ref": "#/definitions/schemas.ProjectsRequest"
                         }
                     }
                 ],
@@ -1085,12 +1085,12 @@ const docTemplate_api = `{
                 "statuses": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.ProjectStatus"
+                        "$ref": "#/definitions/models.Status"
                     }
                 }
             }
         },
-        "models.ProjectStatus": {
+        "models.Status": {
             "type": "object",
             "properties": {
                 "id": {
@@ -1118,7 +1118,7 @@ const docTemplate_api = `{
             ],
             "properties": {
                 "customStatus": {
-                    "$ref": "#/definitions/models.ProjectStatus"
+                    "$ref": "#/definitions/models.Status"
                 },
                 "customStatusId": {
                     "type": "integer"
@@ -1299,6 +1299,9 @@ const docTemplate_api = `{
         },
         "schemas.GroupsRequest": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "members": {
                     "type": "array",
@@ -1352,6 +1355,27 @@ const docTemplate_api = `{
                 },
                 "totalCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "schemas.ProjectsRequest": {
+            "type": "object",
+            "required": [
+                "groupId",
+                "name"
+            ],
+            "properties": {
+                "groupId": {
+                    "type": "integer"
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schemas.AccessMember"
+                    }
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },

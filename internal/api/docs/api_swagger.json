@@ -601,7 +601,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Project"
+                            "$ref": "#/definitions/schemas.ProjectsRequest"
                         }
                     }
                 ],
@@ -703,7 +703,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Project"
+                            "$ref": "#/definitions/schemas.ProjectsRequest"
                         }
                     }
                 ],
@@ -1078,12 +1078,12 @@
                 "statuses": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.ProjectStatus"
+                        "$ref": "#/definitions/models.Status"
                     }
                 }
             }
         },
-        "models.ProjectStatus": {
+        "models.Status": {
             "type": "object",
             "properties": {
                 "id": {
@@ -1111,7 +1111,7 @@
             ],
             "properties": {
                 "customStatus": {
-                    "$ref": "#/definitions/models.ProjectStatus"
+                    "$ref": "#/definitions/models.Status"
                 },
                 "customStatusId": {
                     "type": "integer"
@@ -1292,6 +1292,9 @@
         },
         "schemas.GroupsRequest": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "members": {
                     "type": "array",
@@ -1345,6 +1348,27 @@
                 },
                 "totalCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "schemas.ProjectsRequest": {
+            "type": "object",
+            "required": [
+                "groupId",
+                "name"
+            ],
+            "properties": {
+                "groupId": {
+                    "type": "integer"
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schemas.AccessMember"
+                    }
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
