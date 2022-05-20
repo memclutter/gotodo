@@ -66,6 +66,15 @@ func RunServer() error {
 		tasks.DELETE("/:id/", endpoints.TasksDelete)
 	}
 
+	comments := e.Group("/comments", authMiddleware)
+	{
+		comments.GET("/", endpoints.CommentsList)
+		comments.POST("/", endpoints.CommentsCreate)
+		comments.GET("/:id/", endpoints.CommentsDetail)
+		comments.PUT("/:id/", endpoints.CommentsUpdate)
+		comments.DELETE("/:id/", endpoints.CommentsDelete)
+	}
+
 	groups := e.Group("/groups", authMiddleware)
 	{
 		groups.GET("/", endpoints.GroupsList)
