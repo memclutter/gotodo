@@ -88,6 +88,17 @@ CREATE TABLE IF NOT EXISTS task_participants
     PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS comments
+(
+    id           BIGSERIAL,
+    task_id      BIGINT NOT NULL,
+    user_id      BIGINT NOT NULL,
+    date_created TIMESTAMP DEFAULT NOW(),
+    title        VARCHAR(255),
+    message      TEXT,
+    PRIMARY KEY (id)
+);
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Create indexes
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -126,4 +137,10 @@ ALTER TABLE task_participants
         ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE task_participants
     ADD CONSTRAINT fk_task_participants_user_id FOREIGN KEY (user_id) REFERENCES users (id)
+        ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE comments
+    ADD CONSTRAINT fk_comments_task_id FOREIGN KEY (task_id) REFERENCES tasks (id)
+        ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE comments
+    ADD CONSTRAINT fk_comments_user_id FOREIGN KEY (user_id) REFERENCES users (id)
         ON UPDATE CASCADE ON DELETE CASCADE;

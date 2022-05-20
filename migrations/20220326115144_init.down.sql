@@ -1,6 +1,8 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Foreign keys drop
 -- ---------------------------------------------------------------------------------------------------------------------
+ALTER TABLE comments DROP CONSTRAINT fk_comments_task_id;
+ALTER TABLE comments DROP CONSTRAINT fk_comments_user_id;
 ALTER TABLE task_participants DROP CONSTRAINT fk_task_participants_user_id;
 ALTER TABLE task_participants DROP CONSTRAINT fk_task_participants_task_id;
 ALTER TABLE tasks DROP CONSTRAINT fk_tasks_custom_status_id;
@@ -15,6 +17,7 @@ ALTER TABLE confirmations DROP CONSTRAINT fk_confirmations_user_id;
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Table drops
 -- ---------------------------------------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS task_participants;
 DROP TABLE IF EXISTS tasks;
 DROP TABLE IF EXISTS statuses;
