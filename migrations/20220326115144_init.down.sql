@@ -1,24 +1,36 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Foreign keys drop
 -- ---------------------------------------------------------------------------------------------------------------------
-ALTER TABLE comments DROP CONSTRAINT fk_comments_task_id;
-ALTER TABLE comments DROP CONSTRAINT fk_comments_user_id;
-ALTER TABLE task_participants DROP CONSTRAINT fk_task_participants_user_id;
-ALTER TABLE task_participants DROP CONSTRAINT fk_task_participants_task_id;
-ALTER TABLE tasks DROP CONSTRAINT fk_tasks_custom_status_id;
-ALTER TABLE tasks DROP CONSTRAINT fk_tasks_project_id;
-ALTER TABLE statuses DROP CONSTRAINT fk_statuses_project_id;
-ALTER TABLE access DROP CONSTRAINT fk_access_project_id;
-ALTER TABLE access DROP CONSTRAINT fk_access_group_id;
-ALTER TABLE access DROP CONSTRAINT fk_access_user_id;
-ALTER TABLE projects DROP CONSTRAINT fk_projects_group_id;
-ALTER TABLE confirmations DROP CONSTRAINT fk_confirmations_user_id;
+ALTER TABLE comments
+    DROP CONSTRAINT fk_comments_task_id;
+ALTER TABLE comments
+    DROP CONSTRAINT fk_comments_user_id;
+ALTER TABLE task_participants
+    DROP CONSTRAINT fk_participants_user_id;
+ALTER TABLE task_participants
+    DROP CONSTRAINT fk_participants_task_id;
+ALTER TABLE tasks
+    DROP CONSTRAINT fk_tasks_custom_status_id;
+ALTER TABLE tasks
+    DROP CONSTRAINT fk_tasks_project_id;
+ALTER TABLE statuses
+    DROP CONSTRAINT fk_statuses_project_id;
+ALTER TABLE access
+    DROP CONSTRAINT fk_access_project_id;
+ALTER TABLE access
+    DROP CONSTRAINT fk_access_group_id;
+ALTER TABLE access
+    DROP CONSTRAINT fk_access_user_id;
+ALTER TABLE projects
+    DROP CONSTRAINT fk_projects_group_id;
+ALTER TABLE confirmations
+    DROP CONSTRAINT fk_confirmations_user_id;
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Table drops
 -- ---------------------------------------------------------------------------------------------------------------------
 DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS task_participants;
+DROP TABLE IF EXISTS participants;
 DROP TABLE IF EXISTS tasks;
 DROP TABLE IF EXISTS statuses;
 DROP TABLE IF EXISTS access;

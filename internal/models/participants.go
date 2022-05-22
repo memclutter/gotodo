@@ -2,8 +2,8 @@ package models
 
 import "github.com/uptrace/bun"
 
-type TaskParticipant struct {
-	bun.BaseModel `bun:"table:task_participants,alias:tp"`
+type Participant struct {
+	bun.BaseModel `bun:"table:participants,alias:p"`
 
 	ID     int64 `bun:"id,pk,autoincrement" json:"id"`
 	TaskID int64 `json:"taskId"`

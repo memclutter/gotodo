@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS tasks
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS task_participants
+CREATE TABLE IF NOT EXISTS participants
 (
     id      BIGSERIAL,
     task_id BIGINT NOT NULL,
@@ -132,11 +132,11 @@ ALTER TABLE tasks
 ALTER TABLE tasks
     ADD CONSTRAINT fk_tasks_custom_status_id FOREIGN KEY (custom_status_id) REFERENCES statuses (id)
         ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE task_participants
-    ADD CONSTRAINT fk_task_participants_task_id FOREIGN KEY (task_id) REFERENCES tasks (id)
+ALTER TABLE participants
+    ADD CONSTRAINT fk_participants_task_id FOREIGN KEY (task_id) REFERENCES tasks (id)
         ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE task_participants
-    ADD CONSTRAINT fk_task_participants_user_id FOREIGN KEY (user_id) REFERENCES users (id)
+ALTER TABLE participants
+    ADD CONSTRAINT fk_participants_user_id FOREIGN KEY (user_id) REFERENCES users (id)
         ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE comments
     ADD CONSTRAINT fk_comments_task_id FOREIGN KEY (task_id) REFERENCES tasks (id)
