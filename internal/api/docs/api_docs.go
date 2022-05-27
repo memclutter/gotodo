@@ -777,6 +777,57 @@ const docTemplate_api = `{
                 }
             }
         },
+        "/statuses/": {
+            "post": {
+                "security": [
+                    {
+                        "ApiHeaderAuth": []
+                    }
+                ],
+                "description": "Create status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statuses"
+                ],
+                "summary": "Create",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schemas.StatusesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Status"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/tasks/": {
             "get": {
                 "security": [
@@ -1376,6 +1427,24 @@ const docTemplate_api = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "schemas.StatusesRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "projectId"
+            ],
+            "properties": {
+                "isFinal": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "projectId": {
+                    "type": "integer"
                 }
             }
         },

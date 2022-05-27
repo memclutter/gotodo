@@ -242,6 +242,18 @@ definitions:
     - groupId
     - name
     type: object
+  schemas.StatusesRequest:
+    properties:
+      isFinal:
+        type: boolean
+      name:
+        type: string
+      projectId:
+        type: integer
+    required:
+    - name
+    - projectId
+    type: object
   schemas.TasksListResponse:
     properties:
       items:
@@ -740,6 +752,38 @@ paths:
       summary: Update
       tags:
       - projects
+  /statuses/:
+    post:
+      consumes:
+      - application/json
+      description: Create status
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.StatusesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Status'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/schemas.Error'
+      security:
+      - ApiHeaderAuth: []
+      summary: Create
+      tags:
+      - statuses
   /tasks/:
     get:
       consumes:
