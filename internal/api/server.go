@@ -57,6 +57,13 @@ func RunServer() error {
 	e.POST("/auth/login/", endpoints.AuthLogin)
 	e.POST("/auth/refresh/", endpoints.AuthRefresh)
 
+	statuses := e.Group("/statuses", authMiddleware)
+	{
+		statuses.POST("/", endpoints.StatusesCreate)
+		statuses.PUT("/:id/", endpoints.StatusesUpdate)
+		statuses.DELETE("/:id/", endpoints.StatusesDelete)
+	}
+
 	tasks := e.Group("/tasks", authMiddleware)
 	{
 		tasks.GET("/", endpoints.TasksList)
