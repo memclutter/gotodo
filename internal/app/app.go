@@ -6,14 +6,9 @@ import (
 )
 
 var App = &cli.App{
-	Name:   "gotodo",
-	Usage:  "Golang app",
-	Action: Action,
+	Name:  "gotodo",
+	Usage: "Golang app",
 	Commands: cli.Commands{
 		api.Command,
 	},
-}
-
-func Action(c *cli.Context) error {
-	return nil
 }

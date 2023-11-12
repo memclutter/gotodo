@@ -1,6 +1,9 @@
 package api
 
-import "github.com/urfave/cli/v2"
+import (
+	"github.com/urfave/cli/v2"
+	"gotodo/internal/app/commands/api/server"
+)
 
 var Command = &cli.Command{
 	Name:   "api",
@@ -8,5 +11,5 @@ var Command = &cli.Command{
 }
 
 func Action(c *cli.Context) error {
-	return nil
+	return server.NewServer().Run()
 }
