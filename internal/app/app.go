@@ -1,8 +1,9 @@
 package app
 
 import (
-	"github.com/urfave/cli/v2"
 	"gotodo/internal/app/commands/api"
+
+	"github.com/urfave/cli/v2"
 )
 
 var App = &cli.App{
