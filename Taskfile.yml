@@ -5,3 +5,7 @@ tasks:
     desc: Run golang app
     cmds:
       - go run ./cmd/main.go
+  test:
+    desc: Run test for golang app
+    cmds:
+      - go test ./...
