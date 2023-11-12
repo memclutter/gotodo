@@ -1,12 +1,12 @@
 package api
 
 import (
-	"github.com/urfave/cli/v2"
+	"gotodo/internal/app/commands/api/server"
 	"testing"
 )
 
 func TestModule(t *testing.T) {
-	err := Action(cli.NewContext(cli.NewApp(), nil, nil))
+	err := Action(server.NewServer())
 	if err != nil {
 		t.Fatalf("must be no error, but return error: %v", err)
 	}

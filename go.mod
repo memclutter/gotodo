@@ -2,7 +2,10 @@ module gotodo
 
 go 1.21.4
 
-require github.com/urfave/cli/v2 v2.25.7
+require (
+	github.com/urfave/cli/v2 v2.25.7
+	go.uber.org/dig v1.17.1
+)
 
 require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
