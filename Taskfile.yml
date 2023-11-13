@@ -2,7 +2,7 @@ version: '3'
 
 tasks:
   run-api:
-    desc: Run api server
+    desc: Run api runner
     cmds:
       - go run ./cmd/main.go api
   test:

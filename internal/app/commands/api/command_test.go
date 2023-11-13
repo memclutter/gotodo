@@ -1,14 +1,18 @@
 package api
 
 import (
-	"gotodo/internal/app/commands/api/server"
 	"testing"
-
-	"github.com/labstack/echo/v4"
 )
 
+type runnerMock struct {
+}
+
+func (m runnerMock) Run() error {
+	return nil
+}
+
 func TestModule(t *testing.T) {
-	err := Action(server.New(echo.New()))
+	err := Action(&runnerMock{})
 	if err != nil {
 		t.Fatalf("must be no error, but return error: %v", err)
 	}

@@ -1,13 +1,14 @@
 package server
 
 import (
-	"github.com/labstack/echo/v4"
 	"testing"
+
+	"github.com/labstack/echo/v4"
 )
 
-func TestNewServer(t *testing.T) {
+func TestNew(t *testing.T) {
 	server := New(echo.New())
 	if server == nil {
-		t.Fatal("must be return not nil")
+		t.Fatal("must be return not nil Server interface")
 	}
 }
