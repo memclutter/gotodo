@@ -12,6 +12,13 @@ import (
 
 var Command = &cli.Command{
 	Name: "api",
+	Flags: utils.FlagsWithEnvs([]cli.Flag{
+		&cli.StringFlag{
+			Name:  "address",
+			Value: ":9000",
+			Usage: "The address at which the server will listen",
+		},
+	}),
 	Action: utils.Invoke([]interface{}{
 		runner.New,
 		server.New,

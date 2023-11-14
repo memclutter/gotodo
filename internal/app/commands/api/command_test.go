@@ -1,19 +1,15 @@
 package api
 
 import (
+	"gotodo/internal/app/commands/api/runner"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
-type runnerMock struct {
-}
-
-func (m runnerMock) Run() error {
-	return nil
-}
-
 func TestModule(t *testing.T) {
-	err := Action(&runnerMock{})
-	if err != nil {
-		t.Fatalf("must be no error, but return error: %v", err)
-	}
+	runnerMock := &runner.Mock{}
+	runnerMock.On("Run").Return(nil)
+	require.NoError(t, Action(runnerMock), "must be run not error")
+	runnerMock.AssertExpectations(t)
 }
