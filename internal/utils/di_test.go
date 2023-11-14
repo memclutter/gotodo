@@ -3,6 +3,8 @@ package utils
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"go.uber.org/dig"
 
 	"github.com/urfave/cli/v2"
@@ -10,33 +12,21 @@ import (
 
 func TestInvokeWithEmptyDependencies(t *testing.T) {
 	action := Invoke([]interface{}{}, func(c *cli.Context, dc *dig.Container) {
-		if c == nil {
-			t.Fatal("c *cli.Context cannot be nil")
-		}
-		if dc == nil {
-			t.Fatalf("dc *dig.Container cannot be nil")
-		}
+		require.NotNil(t, c, "cannot be nil")
+		require.NotNil(t, dc, "cannot be nil")
 	})
 	c := cli.NewContext(cli.NewApp(), nil, nil)
-	err := action(c)
-	if err != nil {
-		t.Fatalf("cannot be return nil: %v", err)
-	}
+	require.NoError(t, action(c), "cannot be error")
 }
 
 func TestInvokeWithDependencies(t *testing.T) {
 	action := Invoke([]interface{}{
 		func() int { return 10 },
 	}, func(num int) {
-		if num != 10 {
-			t.Fatalf("num not equal 10")
-		}
+		require.Equal(t, 10, num, "can be equal 10")
 	})
 	c := cli.NewContext(cli.NewApp(), nil, nil)
-	err := action(c)
-	if err != nil {
-		t.Fatalf("cannot be return nil: %v", err)
-	}
+	require.NoError(t, action(c), "must be run without error")
 }
 
 func TestInvokeFailProvide(t *testing.T) {
@@ -45,8 +35,5 @@ func TestInvokeFailProvide(t *testing.T) {
 		func(num2 int) int { return 11 },
 	}, func(num int) {})
 	c := cli.NewContext(cli.NewApp(), nil, nil)
-	err := action(c)
-	if err == nil {
-		t.Fatalf("can be return error, but nil return")
-	}
+	require.Error(t, action(c), "must be run with error")
 }
