@@ -1,6 +1,7 @@
 package api
 
 import (
+	"gotodo/internal/app/commands/api/endpoints/tasks"
 	"gotodo/internal/app/commands/api/runner"
 	"gotodo/internal/app/commands/api/server"
 	"gotodo/internal/utils"
@@ -23,6 +24,7 @@ var Command = &cli.Command{
 		runner.New,
 		server.New,
 		echo.New,
+		tasks.NewEndpoint,
 	}, Action),
 }
 
