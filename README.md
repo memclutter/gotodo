@@ -13,3 +13,5 @@ I use and am grateful to the creators of these things:
 - [Taskfile.dev](https://taskfile.dev)
 - [golangci-lint](https://golangci-lint.run)
 - [pre-commit](https://pre-commit.com)
+- [echo](https://echo.labstack.com/)
+- [swaggo/swag](https://github.com/swaggo/swag)
