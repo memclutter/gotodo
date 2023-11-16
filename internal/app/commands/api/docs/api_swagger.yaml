@@ -1,0 +1,13 @@
+basePath: /
+host: localhost
+info:
+  contact: {}
+  description: API for gotodo
+  title: gotodo
+  version: "1.0"
+paths:
+  /tasks/:
+    get:
+      responses: {}
+      summary: List
+swagger: "2.0"

@@ -5,7 +5,11 @@ tasks:
     desc: Run api runner
     cmds:
       - go run ./cmd/main.go api
-  test:
+  go-test:
     desc: Run test for golang app
     cmds:
       - go test ./...
+  go-generate:
+    desc: Generate go
+    cmds:
+      - go generate ./...
