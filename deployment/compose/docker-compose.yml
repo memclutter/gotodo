@@ -1,0 +1,23 @@
+version: "3.9"
+volumes:
+  db-data:
+    driver: local
+networks:
+  backend:
+    name: ${COMPOSE_PROJECT_NAME}-backend
+services:
+  db:
+    image: "bitnami/postgresql:14.2.0-debian-10-r42"
+    expose: [ 5432 ]
+    shm_size: 1g
+    restart: always
+    networks: [ "backend" ]
+    profiles: [ "services" ]
+    volumes:
+      - "db-data:/bitnami/postgresql"
+    environment:
+      BITNAMI_DEBUG: "yes"
+      ALLOW_EMPTY_PASSWORD: "no"
+      POSTGRESQL_USERNAME: "user"
+      POSTGRESQL_PASSWORD: "secret"
+      POSTGRESQL_DATABASE: "db"

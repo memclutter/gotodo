@@ -6,6 +6,6 @@ import "github.com/labstack/echo/v4"
 //
 // @Router			/tasks/ 		[GET]
 // @Summary			List
-func (ep Endpoint) List(c echo.Context) error {
+func (ep *Endpoint) List(c echo.Context) error {
 	return nil
 }

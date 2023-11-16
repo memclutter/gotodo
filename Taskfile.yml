@@ -1,15 +1,25 @@
 version: '3'
 
 tasks:
-  run-api:
-    desc: Run api runner
+  go-run:
+    desc: Run go command
+    platforms: [ linux ]
     cmds:
-      - go run ./cmd/main.go api
+      - go run ./cmd/main.go {{ .CLI_ARGS }}
   go-test:
     desc: Run test for golang app
+    platforms: [ linux ]
     cmds:
-      - go test ./...
+      - go test ./... {{ .CLI_ARGS }}
   go-generate:
     desc: Generate go
+    platforms: [ linux ]
     cmds:
       - go generate ./...
+  dc:
+    desc: Docker compose
+    platforms: [ linux ]
+    dir: deployment/compose
+    cmds:
+      - cp -n .env.dist .env
+      - docker compose {{ .CLI_ARGS }}
