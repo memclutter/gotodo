@@ -15,3 +15,4 @@ I use and am grateful to the creators of these things:
 - [pre-commit](https://pre-commit.com)
 - [echo](https://echo.labstack.com/)
 - [swaggo/swag](https://github.com/swaggo/swag)
+- [golang-migrate/migrate](https://github.com/golang-migrate/migrate)

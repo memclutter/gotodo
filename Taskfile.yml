@@ -22,4 +22,15 @@ tasks:
     dir: deployment/compose
     cmds:
       - cp -n .env.dist .env
+      - cp -n docker-compose.override.yml.dist docker-compose.override.yml
       - docker compose {{ .CLI_ARGS }}
+  migrate-db-create-sql:
+    desc: Migrate db - Create sql file
+    platforms: [ linux ]
+    cmds:
+      - migrate create -ext sql -dir migrations/db -seq {{ .CLI_ARGS }}
+  migrate-db:
+    desc: Migrate db - Up/Down
+    platforms: [ linux ]
+    cmds:
+      - migrate -database postgresql://user:secret@localhost:5432/db?sslmode=disable -path migrations/db {{ .CLI_ARGS }}

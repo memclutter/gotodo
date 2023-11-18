@@ -1,0 +1,8 @@
+# Local overrides in docker-compose deployment
+# For example:
+# - Port-forward db port 5432 on host machine
+version: "3.9"
+services:
+  db:
+    ports:
+      - "5432:5432"
