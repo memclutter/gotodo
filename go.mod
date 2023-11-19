@@ -3,6 +3,7 @@ module gotodo
 go 1.21.4
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/labstack/echo/v4 v4.11.3
 	github.com/stretchr/testify v1.8.4
 	github.com/swaggo/echo-swagger v1.4.1

@@ -10,4 +10,7 @@ paths:
     get:
       responses: {}
       summary: List
+    post:
+      responses: {}
+      summary: Create
 swagger: "2.0"

@@ -19,6 +19,10 @@ const docTemplateapi = `{
             "get": {
                 "summary": "List",
                 "responses": {}
+            },
+            "post": {
+                "summary": "Create",
+                "responses": {}
             }
         }
     }

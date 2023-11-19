@@ -15,8 +15,8 @@ type EchoContext struct {
 }
 
 func (m *EchoContext) Request() *http.Request {
-	//TODO implement me
-	panic("implement me")
+	args := m.Called()
+	return args.Get(0).(*http.Request)
 }
 
 func (m *EchoContext) SetRequest(r *http.Request) {
@@ -150,13 +150,13 @@ func (m *EchoContext) Set(key string, val interface{}) {
 }
 
 func (m *EchoContext) Bind(i interface{}) error {
-	//TODO implement me
-	panic("implement me")
+	args := m.Called(i)
+	return args.Error(0)
 }
 
 func (m *EchoContext) Validate(i interface{}) error {
-	//TODO implement me
-	panic("implement me")
+	args := m.Called(i)
+	return args.Error(0)
 }
 
 func (m *EchoContext) Render(code int, name string, data interface{}) error {
@@ -180,8 +180,8 @@ func (m *EchoContext) String(code int, s string) error {
 }
 
 func (m *EchoContext) JSON(code int, i interface{}) error {
-	//TODO implement me
-	panic("implement me")
+	args := m.Called(code, i)
+	return args.Error(0)
 }
 
 func (m *EchoContext) JSONPretty(code int, i interface{}, indent string) error {
