@@ -25,6 +25,9 @@ var Command = &cli.Command{
 		server.New,
 		echo.New,
 		tasks.NewEndpoint,
+		utils.NewSqlDriverConnector,
+		utils.NewSqlDB,
+		utils.NewBunDB,
 	}, Action),
 }
 

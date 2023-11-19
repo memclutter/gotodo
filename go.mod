@@ -8,6 +8,7 @@ require (
 	github.com/swaggo/echo-swagger v1.4.1
 	github.com/swaggo/swag v1.16.2
 	github.com/uptrace/bun v1.1.16
+	github.com/uptrace/bun/driver/pgdriver v1.1.16
 	github.com/urfave/cli/v2 v2.25.7
 	go.uber.org/dig v1.17.1
 )
@@ -45,4 +46,5 @@ require (
 	golang.org/x/tools v0.15.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	mellium.im/sasl v0.3.1 // indirect
 )
