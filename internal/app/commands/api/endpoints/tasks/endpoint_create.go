@@ -10,8 +10,15 @@ import (
 
 // Create godoc
 //
-// @Router			/tasks/		[POST]
-// @Summary			Create
+//	@Router		/tasks/		[POST]
+//	@Summary	Create
+//	@Tags		Tasks
+//	@Accept		json
+//	@Produce	json
+//	@Param		data	body		schemas.TaskForm	true	"Request body"
+//	@Failure	400		{object}	schemas.Error
+//	@Failure	500		{object}	schemas.Error
+//	@Success	201		{object}	models.Task
 func (ep *Endpoint) Create(c echo.Context) error {
 	ctx := c.Request().Context()
 	request := &schemas.TaskForm{}

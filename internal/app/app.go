@@ -12,6 +12,7 @@ var App = &cli.App{
 	Usage: "Golang app",
 	Flags: utils.FlagsWithEnvs([]cli.Flag{
 		&cli.StringFlag{Name: "dbDsn", Value: "postgresql://user:secret@localhost:5432/db?sslmode=disable"},
+		&cli.BoolFlag{Name: "debug"},
 	}),
 	Commands: cli.Commands{
 		api.Command,

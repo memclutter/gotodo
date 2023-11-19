@@ -1,4 +1,31 @@
 basePath: /
+definitions:
+  models.Task:
+    properties:
+      body:
+        type: string
+      dateCreated:
+        type: string
+      id:
+        type: integer
+      isDone:
+        type: boolean
+      title:
+        type: string
+    type: object
+  schemas.Error:
+    properties:
+      message:
+        type: string
+      validationErrors: {}
+    type: object
+  schemas.TaskForm:
+    properties:
+      body:
+        type: string
+      title:
+        type: string
+    type: object
 host: localhost
 info:
   contact: {}
@@ -11,6 +38,34 @@ paths:
       responses: {}
       summary: List
     post:
-      responses: {}
+      consumes:
+      - application/json
+      parameters:
+      - description: Request body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.TaskForm'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Task'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schemas.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schemas.Error'
       summary: Create
+      tags:
+      - Tasks
 swagger: "2.0"
+tags:
+- description: Endpoint tasks
+  name: Tasks
