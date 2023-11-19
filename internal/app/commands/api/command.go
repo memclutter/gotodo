@@ -3,6 +3,7 @@ package api
 import (
 	_ "gotodo/internal/app/commands/api/docs"
 	"gotodo/internal/app/commands/api/endpoints/tasks"
+	"gotodo/internal/app/commands/api/extensions"
 	"gotodo/internal/utils"
 
 	"github.com/labstack/echo/v4/middleware"
@@ -36,6 +37,7 @@ func Action(c *cli.Context, e *echo.Echo, tasksEndpoint *tasks.Endpoint) error {
 
 	e.Debug = c.Bool("debug")
 	e.HideBanner = !e.Debug
+	e.HTTPErrorHandler = extensions.ErrorHandler
 
 	e.Pre(middleware.RemoveTrailingSlash())
 

@@ -30,8 +30,8 @@ func (m *EchoContext) SetResponse(r *echo.Response) {
 }
 
 func (m *EchoContext) Response() *echo.Response {
-	//TODO implement me
-	panic("implement me")
+	args := m.Called()
+	return args.Get(0).(*echo.Response)
 }
 
 func (m *EchoContext) IsTLS() bool {
@@ -280,8 +280,8 @@ func (m *EchoContext) SetLogger(l echo.Logger) {
 }
 
 func (m *EchoContext) Echo() *echo.Echo {
-	//TODO implement me
-	panic("implement me")
+	args := m.Called()
+	return args.Get(0).(*echo.Echo)
 }
 
 func (m *EchoContext) Reset(r *http.Request, w http.ResponseWriter) {
