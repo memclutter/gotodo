@@ -17,8 +17,42 @@ const docTemplateapi = `{
     "paths": {
         "/tasks/": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
                 "summary": "List",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Task"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.Error"
+                        }
+                    }
+                }
             },
             "post": {
                 "consumes": [
@@ -89,14 +123,28 @@ const docTemplateapi = `{
         "schemas.Error": {
             "type": "object",
             "properties": {
+                "details": {
+                    "type": "string"
+                },
                 "message": {
                     "type": "string"
                 },
-                "validationErrors": {}
+                "validationErrors": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "schemas.TaskForm": {
             "type": "object",
+            "required": [
+                "title"
+            ],
             "properties": {
                 "body": {
                     "type": "string"
