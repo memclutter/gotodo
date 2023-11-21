@@ -4,7 +4,9 @@ import (
 	"context"
 	"flag"
 	"gotodo/internal/app/commands/api/endpoints/tasks"
+	"gotodo/internal/app/commands/api/validations"
 	"gotodo/internal/mocks"
+	"gotodo/internal/utils"
 	"net"
 	"net/http"
 	"testing"
@@ -31,11 +33,12 @@ func TestAction(t *testing.T) {
 	e := echo.New()
 	db := &mocks.BunDB{}
 	tasksEndpoint := tasks.NewEndpoint(db)
+	v := &utils.Validator{}
 
 	// Act
 	errCh := make(chan error)
 	go func() {
-		errCh <- Action(c, e, tasksEndpoint)
+		errCh <- Action(c, e, v, tasksEndpoint, &validations.Email{})
 	}()
 
 	// Assert
