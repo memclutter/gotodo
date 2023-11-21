@@ -19,7 +19,7 @@ func TestErrorHandler(t *testing.T) {
 	c.On("Response").Return(&echo.Response{Committed: false})
 	c.On("Echo").Return(e)
 	c.On("Request").Return(&http.Request{Method: http.MethodPost})
-	c.On("JSON", http.StatusInternalServerError, &schemas.Error{Message: "Test error"}).Return(nil)
+	c.On("JSON", http.StatusInternalServerError, &schemas.Error{Message: http.StatusText(http.StatusInternalServerError)}).Return(nil)
 
 	// Act
 	ErrorHandler(err, c)

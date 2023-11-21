@@ -1,10 +1,13 @@
 package extensions
 
 import (
-	"encoding/json"
+	"database/sql"
 	"errors"
 	"gotodo/internal/app/commands/api/schemas"
 	"net/http"
+	"strings"
+
+	"github.com/go-playground/validator/v10"
 
 	"github.com/labstack/echo/v4"
 )
@@ -15,44 +18,53 @@ func ErrorHandler(err error, c echo.Context) {
 		return
 	}
 
-	var he *echo.HTTPError
-	ok := errors.As(err, &he)
-	if ok {
-		if he.Internal != nil {
-			var herr *echo.HTTPError
-			if ok := errors.As(he.Internal, &herr); ok {
-				he = herr
-			}
-		}
+	code := http.StatusInternalServerError
+	response := &schemas.Error{}
+
+	if errors.Is(err, sql.ErrNoRows) {
+		code = http.StatusNotFound
+		response.Details = err.Error()
 	} else {
-		he = &echo.HTTPError{
-			Code:    http.StatusInternalServerError,
-			Message: http.StatusText(http.StatusInternalServerError),
-		}
-	}
+		var (
+			httpError        *echo.HTTPError
+			validationErrors validator.ValidationErrors
+		)
 
-	// Issue #1426
-	code := he.Code
-	response := &schemas.Error{
-		Message: http.StatusText(code),
-	}
+		if errors.As(err, &httpError) {
+			code = httpError.Code
+			switch message := httpError.Message.(type) {
+			case string:
+				response.Details = message
+			default:
+				response.Details = err.Error()
+			}
+		} else if errors.As(err, &validationErrors) {
+			response.Details = validationErrors.Error()
 
-	switch m := he.Message.(type) {
-	case string:
-		if c.Echo().Debug {
-			response.Message = m
-			response.Details = err.Error()
+			items := make(map[string][]string)
+			for _, validationError := range validationErrors {
+				key := validationError.Field()
+				if _, ok := response.ValidationErrors[key]; !ok {
+					items[key] = make([]string, 0)
+				}
+				items[key] = append(items[key], strings.ToUpper(validationError.Tag()))
+			}
+
+			if len(items) > 0 {
+				response.ValidationErrors = items
+			}
 		} else {
-			response.Message = m
+			response.Details = err.Error()
 		}
-	case json.Marshaler:
-		// do nothing - this type knows how to format itself to JSON
-	case error:
-		response.Message = http.StatusText(code)
-		response.Details = m.Error()
+	}
+
+	// Hide details when not debug
+	if !c.Echo().Debug {
+		response.Details = ""
 	}
 
 	// Send response
+	response.Message = http.StatusText(code)
 	if c.Request().Method == http.MethodHead { // Issue #608
 		err = c.NoContent(code)
 	} else {

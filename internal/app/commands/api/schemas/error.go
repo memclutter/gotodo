@@ -1,7 +1,7 @@
 package schemas
 
 type Error struct {
-	Message          string
-	Details          string
-	ValidationErrors map[string][]string
+	Message          string              `json:"message,omitempty"`
+	Details          string              `json:"details,omitempty"`
+	ValidationErrors map[string][]string `json:"validationErrors,omitempty"`
 }

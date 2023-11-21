@@ -6,6 +6,6 @@ type TaskListRequest struct {
 }
 
 type TaskForm struct {
-	Title string
-	Body  string
+	Title string `json:"title" validate:"required"`
+	Body  string `json:"body"`
 }
