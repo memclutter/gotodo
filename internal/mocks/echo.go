@@ -65,8 +65,8 @@ func (m *EchoContext) SetPath(p string) {
 }
 
 func (m *EchoContext) Param(name string) string {
-	//TODO implement me
-	panic("implement me")
+	args := m.Called(name)
+	return args.String(0)
 }
 
 func (m *EchoContext) ParamNames() []string {

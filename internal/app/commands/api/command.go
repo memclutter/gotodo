@@ -63,6 +63,7 @@ func Action(
 	e.GET("/docs/*", echoSwagger.EchoWrapHandler(echoSwagger.InstanceName("api")))
 	e.GET("/tasks", tasksEndpoint.List)
 	e.POST("/tasks", tasksEndpoint.Create)
+	e.PUT("/tasks/:id", tasksEndpoint.Update)
 
 	return e.Start(c.String("address"))
 }
