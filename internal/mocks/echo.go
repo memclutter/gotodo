@@ -245,8 +245,8 @@ func (m *EchoContext) Inline(file string, name string) error {
 }
 
 func (m *EchoContext) NoContent(code int) error {
-	//TODO implement me
-	panic("implement me")
+	args := m.Called(code)
+	return args.Error(0)
 }
 
 func (m *EchoContext) Redirect(code int, url string) error {

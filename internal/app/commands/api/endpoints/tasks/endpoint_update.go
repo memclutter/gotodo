@@ -20,7 +20,7 @@ import (
 //	@Param		data	body		schemas.TaskForm	true	"Request body"
 //	@Failure	400		{object}	schemas.Error
 //	@Failure	500		{object}	schemas.Error
-//	@Success	201		{object}	models.Task
+//	@Success	200		{object}	models.Task
 func (ep *Endpoint) Update(c echo.Context) (err error) {
 	ctx := c.Request().Context()
 	request := &schemas.TaskForm{}

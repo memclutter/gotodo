@@ -64,6 +64,7 @@ func Action(
 	e.GET("/tasks", tasksEndpoint.List)
 	e.POST("/tasks", tasksEndpoint.Create)
 	e.PUT("/tasks/:id", tasksEndpoint.Update)
+	e.DELETE("/tasks/:id", tasksEndpoint.Delete)
 
 	return e.Start(c.String("address"))
 }
