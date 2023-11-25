@@ -16,6 +16,12 @@ tasks:
     platforms: [ linux ]
     cmds:
       - go generate ./...
+  spa-dev:
+    desc: Start dev server for single page app
+    platforms: [ linux ]
+    dir: web/spa
+    cmds:
+      - npm run dev
   dc:
     desc: Docker compose
     platforms: [ linux ]
