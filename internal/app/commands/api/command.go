@@ -59,6 +59,7 @@ func Action(
 	e.Validator = validator
 
 	e.Pre(middleware.RemoveTrailingSlash())
+	e.Use(middleware.CORS())
 
 	e.GET("/docs/*", echoSwagger.EchoWrapHandler(echoSwagger.InstanceName("api")))
 	e.GET("/tasks", tasksEndpoint.List)
